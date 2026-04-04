@@ -1,0 +1,408 @@
+.commandCenter {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #0d0d1a;
+  color: #e0e0f0;
+  font-family: inherit;
+}
+
+/* ── Header ───────────────────────────────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1.25rem;
+  background: #12121f;
+  border-bottom: 1px solid #2a2a40;
+  flex-wrap: wrap;
+}
+
+.header h1 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #7c6ef2;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.headerControls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.roomInput {
+  background: #0f0f1a;
+  border: 1px solid #333;
+  border-radius: 5px;
+  color: #e8e8f0;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.85rem;
+  width: 11rem;
+  outline: none;
+}
+
+.roomInput:focus {
+  border-color: #7c6ef2;
+}
+
+.roomLabel {
+  font-size: 0.8rem;
+  color: #888;
+  white-space: nowrap;
+}
+
+/* ── Buttons ──────────────────────────────────────────────────────────────── */
+.btnPrimary,
+.btnDanger,
+.btnSuccess,
+.btnWarning {
+  border: none;
+  border-radius: 5px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  transition: opacity 0.15s;
+  color: #fff;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btnPrimary  { background: #7c6ef2; }
+.btnDanger   { background: #e05252; }
+.btnSuccess  { background: #3cb86e; }
+.btnWarning  { background: #d97706; }
+
+.btnPrimary:hover,
+.btnDanger:hover,
+.btnSuccess:hover,
+.btnWarning:hover  { opacity: 0.82; }
+
+.btnPrimary:disabled { opacity: 0.45; cursor: default; }
+
+/* ── Layout grid ─────────────────────────────────────────────────────────── */
+.body {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  grid-template-rows: auto 1fr auto;
+  gap: 0;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ── Panel base ──────────────────────────────────────────────────────────── */
+.panel {
+  border: 1px solid #1e1e30;
+  padding: 0.75rem 1rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.panelTitle {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #7c6ef2;
+  margin-bottom: 0.6rem;
+}
+
+/* ── Media grid ──────────────────────────────────────────────────────────── */
+.mediaGrid {
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #1e1e30;
+  min-height: 200px;
+  align-items: flex-start;
+}
+
+.tile {
+  background: #131320;
+  border: 1px solid #2a2a40;
+  border-radius: 8px;
+  overflow: hidden;
+  width: 220px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.tileHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.6rem;
+  background: #1a1a2e;
+  border-bottom: 1px solid #2a2a40;
+  font-size: 0.75rem;
+  color: #bbb;
+}
+
+.tileKindBadge {
+  background: #2a2a3a;
+  border-radius: 3px;
+  padding: 0.05rem 0.3rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #7c6ef2;
+}
+
+.tileVideo {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: #050510;
+  display: block;
+  object-fit: cover;
+}
+
+.tileAudioBody {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80px;
+  font-size: 2rem;
+  background: #050510;
+}
+
+.tileLocalLabel {
+  color: #7c6ef2;
+}
+
+.tilePlaceholder {
+  width: 220px;
+  height: 140px;
+  background: #0a0a18;
+  border: 1px dashed #2a2a40;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: #444;
+}
+
+/* ── Connection state ────────────────────────────────────────────────────── */
+.statePanel {
+  grid-column: 2 / 3;
+  grid-row: 1 / 3;
+  border-left: 1px solid #1e1e30;
+  overflow-y: auto;
+}
+
+.stateTable {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.3rem 0.75rem;
+  font-size: 0.8rem;
+}
+
+.stateTable dt {
+  color: #777;
+  white-space: nowrap;
+}
+
+.stateTable dd {
+  font-weight: 500;
+  word-break: break-all;
+}
+
+/* connection state colours */
+.st_idle       { color: #666; }
+.st_connecting { color: #d97706; }
+.st_connected  { color: #3cb86e; }
+.st_error      { color: #e05252; }
+
+.st_connected_ice    { color: #3cb86e; }
+.st_checking_ice     { color: #d97706; }
+.st_disconnected_ice { color: #e05252; }
+.st_null_state       { color: #555; }
+
+/* ── Peer inspector ──────────────────────────────────────────────────────── */
+.peerPanel {
+  grid-column: 1 / 2;
+  grid-row: 2 / 3;
+  overflow-y: auto;
+  border-top: 1px solid #1e1e30;
+  max-height: 180px;
+}
+
+.peerList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.peerItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: #ccc;
+}
+
+.peerBadge {
+  background: #1e1e30;
+  border-radius: 3px;
+  padding: 0.1rem 0.35rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #9c8ef0;
+}
+
+.peerEmpty {
+  font-size: 0.8rem;
+  color: #444;
+}
+
+/* ── Stats panel ─────────────────────────────────────────────────────────── */
+.statsPanel {
+  border-top: 1px solid #1e1e30;
+  border-left: 1px solid #1e1e30;
+  overflow-y: auto;
+  max-height: 180px;
+  grid-column: 2 / 3;
+  grid-row: 3 / 4;
+}
+
+.statsList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.75rem;
+  font-family: 'Courier New', monospace;
+}
+
+.statRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  color: #aaa;
+}
+
+.statKey {
+  color: #777;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.statVal {
+  color: #c5c5e0;
+  flex-shrink: 0;
+}
+
+.statsEmpty {
+  font-size: 0.75rem;
+  color: #444;
+}
+
+/* ── Event console ────────────────────────────────────────────────────────── */
+.consolePanel {
+  grid-column: 1 / 3;
+  grid-row: 4 / 5;
+  border-top: 1px solid #1e1e30;
+  max-height: 190px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.consoleLog {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+}
+
+.consoleEntry {
+  display: flex;
+  gap: 0.6rem;
+  align-items: baseline;
+}
+
+.consoleTs {
+  color: #555;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.consoleMsg {
+  color: #bbb;
+  word-break: break-all;
+}
+
+.consoleEntry_info  .consoleMsg { color: #b0b0d0; }
+.consoleEntry_warn  .consoleMsg { color: #d97706; }
+.consoleEntry_error .consoleMsg { color: #e05252; }
+
+.consoleEmpty {
+  font-size: 0.8rem;
+  color: #444;
+}
+
+/* ── Responsive: stack on small screens ───────────────────────────────────── */
+@media (max-width: 700px) {
+  .body {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+
+  .statePanel {
+    grid-column: 1 / 2;
+    grid-row: auto;
+    border-left: none;
+    border-top: 1px solid #1e1e30;
+  }
+
+  .peerPanel {
+    grid-column: 1 / 2;
+    grid-row: auto;
+  }
+
+  .statsPanel {
+    grid-column: 1 / 2;
+    grid-row: auto;
+    border-left: none;
+  }
+
+  .consolePanel {
+    grid-column: 1 / 2;
+    grid-row: auto;
+  }
+}
+
+/* ── Header video checkbox label ──────────────────────────────────────────── */
+.videoLabel {
+  font-size: 0.8rem;
+  color: #aaa;
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+}
+
+/* ── Header error message ─────────────────────────────────────────────────── */
+.headerError {
+  color: #e05252;
+  font-size: 0.8rem;
+}

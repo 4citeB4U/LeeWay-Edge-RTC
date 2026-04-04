@@ -59,132 +59,12 @@ import {
 } from 'recharts';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { useRTCStore } from './src/rtc/store';
+import type { RTCState } from './src/rtc/store';
 
 // --- UTILS ---
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
-}
-
-// --- TYPES ---
-export type ConnectionState = 'new' | 'connecting' | 'connected' | 'disconnected' | 'failed' | 'closed';
-export type IceConnectionState = 'new' | 'checking' | 'connected' | 'completed' | 'failed' | 'disconnected' | 'closed';
-
-export interface PeerStats {
-  id: string;
-  name: string;
-  bitrate: number;
-  packetLoss: number;
-  rtt: number;
-  jitter: number;
-  audioLevel: number;
-  videoResolution?: string;
-  isLocal?: boolean;
-  state?: 'connected' | 'connecting' | 'degraded';
-  transport?: 'direct' | 'turn' | 'unknown';
-  audio?: boolean;
-  video?: boolean;
-  screen?: boolean;
-}
-
-export interface RTCEvent {
-  id: string;
-  timestamp: number;
-  type: 'signaling' | 'rtc' | 'sfu' | 'turn' | 'system';
-  level: 'info' | 'warn' | 'error' | 'success';
-  message: string;
-  source?: string;
-}
-
-export interface RTCState {
-  roomName: string;
-  peerId: string;
-  connectionState: ConnectionState;
-  iceState: IceConnectionState;
-  signalingState: string;
-  isRelay: boolean;
-  selectedCandidatePair: string;
-  peers: PeerStats[];
-  events: RTCEvent[];
-}
-
-// --- MOCK STORE ---
-export function useRTCStore() {
-  const [state, setState] = useState<RTCState>({
-    roomName: 'production-us-east-1',
-    peerId: 'local-agent-01',
-    connectionState: 'new',
-    iceState: 'new',
-    signalingState: 'stable',
-    isRelay: false,
-    selectedCandidatePair: 'N/A',
-    peers: [],
-    events: [],
-  });
-
-  const addEvent = useCallback((event: Omit<RTCEvent, 'id' | 'timestamp'>) => {
-    setState(prev => ({
-      ...prev,
-      events: [
-        {
-          ...event,
-          id: Math.random().toString(36).substr(2, 9),
-          timestamp: Date.now(),
-        },
-        ...prev.events,
-      ].slice(0, 100),
-    }));
-  }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setState(prev => ({ ...prev, connectionState: 'connecting', iceState: 'checking' }));
-      addEvent({ type: 'signaling', level: 'info', message: 'Connecting to signaling server...', source: 'SIGNAL' });
-    }, 1000);
-
-    const timer2 = setTimeout(() => {
-      setState(prev => ({ 
-        ...prev, 
-        connectionState: 'connected', 
-        iceState: 'connected',
-        selectedCandidatePair: '192.168.1.5:54321 <-> 34.120.45.12:40000 (UDP)',
-        isRelay: false
-      }));
-      addEvent({ type: 'rtc', level: 'success', message: 'WebRTC Transport connected (Direct)', source: 'RTC' });
-      
-      setState(prev => ({
-        ...prev,
-        peers: [
-          { id: 'local', name: 'You (Agent)', bitrate: 2450, packetLoss: 0.1, rtt: 15, jitter: 2, audioLevel: 0.05, isLocal: true, state: 'connected', transport: 'direct', audio: true, video: true, screen: false },
-          { id: 'peer-1', name: 'Edge-Node-Alpha', bitrate: 1800, packetLoss: 0.5, rtt: 42, jitter: 5, audioLevel: 0.12, state: 'connected', transport: 'direct', audio: true, video: true, screen: false },
-          { id: 'peer-2', name: 'Client-Mobile-04', bitrate: 850, packetLoss: 2.4, rtt: 110, jitter: 12, audioLevel: 0.01, state: 'degraded', transport: 'turn', audio: true, video: false, screen: false },
-        ]
-      }));
-    }, 3000);
-
-    return () => {
-      clearTimeout(timer);
-      clearTimeout(timer2);
-    };
-  }, [addEvent]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setState(prev => ({
-        ...prev,
-        peers: prev.peers.map(peer => ({
-          ...peer,
-          bitrate: Math.max(100, peer.bitrate + (Math.random() - 0.5) * 200),
-          packetLoss: Math.max(0, peer.packetLoss + (Math.random() - 0.5) * 0.4),
-          rtt: Math.max(5, peer.rtt + (Math.random() - 0.5) * 10),
-          jitter: Math.max(1, peer.jitter + (Math.random() - 0.5) * 4),
-        }))
-      }));
-    }, 2000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  return { state, addEvent };
 }
 
 // --- UI COMPONENTS (INLINED SHADCN-LIKE) ---
@@ -354,39 +234,30 @@ function TopologyView() {
 
 // --- MAIN COMPONENT ---
 export default function LeeWayEdgeRtc() {
-  const { state, addEvent } = useRTCStore();
+  const { state, addEvent, connect, disconnect, publish, stopPublish, isPublishing } = useRTCStore();
   const [series, setSeries] = useState<any[]>([]);
-  
-  // Initialize series
+  const [roomInput, setRoomInput] = useState('leeway-main');
+
+  // Initialize chart with zeros
   useEffect(() => {
-    const initial = Array.from({ length: 20 }).map((_, idx) => ({
-      time: `${String(idx).padStart(2, '0')}:00`,
-      bitrateIn: 1200 + Math.round(Math.random() * 1800),
-      bitrateOut: 900 + Math.round(Math.random() * 1400),
-      rtt: 20 + Math.round(Math.random() * 40),
-      jitter: 1 + Math.round(Math.random() * 10),
-    }));
-    setSeries(initial);
+    setSeries(Array.from({ length: 20 }).map(() => ({
+      time: '--:--:--', bitrateIn: 0, bitrateOut: 0, rtt: 0, jitter: 0,
+    })));
   }, []);
 
-  // Update series with live data
+  // Update chart from real peer stats whenever pollStats fires
   useEffect(() => {
-    const interval = setInterval(() => {
-      setSeries((prev) => {
-        if (prev.length === 0) return prev;
-        const nextTime = new Date().toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        const nextPoint = {
-          time: nextTime,
-          bitrateIn: 1500 + Math.round(Math.random() * 2000),
-          bitrateOut: 1000 + Math.round(Math.random() * 1500),
-          rtt: 15 + Math.round(Math.random() * 45),
-          jitter: 1 + Math.round(Math.random() * 8),
-        };
-        return [...prev.slice(1), nextPoint];
-      });
-    }, 2000);
-    return () => clearInterval(interval);
-  }, []);
+    const localPeer = state.peers.find(p => p.isLocal);
+    if (!localPeer) return;
+    const nextTime = new Date().toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    setSeries(prev => [...prev.slice(1), {
+      time: nextTime,
+      bitrateIn: Math.round(localPeer.bitrate),
+      bitrateOut: Math.round(localPeer.bitrate * 0.65),
+      rtt: Math.round(localPeer.rtt),
+      jitter: Math.round(localPeer.jitter),
+    }]);
+  }, [state.peers]);
 
   const latest = series.length > 0 ? series[series.length - 1] : { bitrateIn: 0, bitrateOut: 0, rtt: 0, jitter: 0 };
 
@@ -425,8 +296,8 @@ export default function LeeWayEdgeRtc() {
           <div className="flex flex-wrap items-center gap-4">
             <div className="flex items-center gap-6 px-6 py-3 bg-black/40 rounded-2xl border border-white/5">
               <div className="flex flex-col">
-                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-tighter">System Health</span>
-                <span className="text-emerald-400 font-black text-sm">99.98%</span>
+                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-tighter">Status</span>
+                <span className={cn("font-black text-sm", state.connectionState === 'connected' ? 'text-emerald-400' : state.connectionState === 'connecting' ? 'text-amber-400' : 'text-slate-400')}>{state.connectionState.toUpperCase()}</span>
               </div>
               <div className="w-px h-8 bg-white/10" />
               <div className="flex flex-col">
@@ -435,13 +306,42 @@ export default function LeeWayEdgeRtc() {
               </div>
               <div className="w-px h-8 bg-white/10" />
               <div className="flex flex-col">
-                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-tighter">Uptime</span>
-                <span className="text-white font-black text-sm">14d 02h</span>
+                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-tighter">Room</span>
+                <span className="text-cyan-400 font-black text-sm font-mono">{state.roomName || roomInput}</span>
               </div>
             </div>
-            <Button className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs px-8 h-12 rounded-2xl shadow-lg shadow-cyan-500/20 transition-all active:scale-95">
-              DEPLOY_DIAGNOSTICS
-            </Button>
+            {state.connectionState !== 'connected' ? (
+              <div className="flex items-center gap-2">
+                <input
+                  value={roomInput}
+                  onChange={e => setRoomInput(e.target.value)}
+                  placeholder="room-id"
+                  className="h-12 px-4 rounded-2xl bg-black/40 border border-white/10 text-white text-xs font-mono w-36 focus:outline-none focus:border-cyan-500/50"
+                />
+                <Button
+                  onClick={() => connect(roomInput)}
+                  disabled={state.connectionState === 'connecting'}
+                  className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs px-8 h-12 rounded-2xl shadow-lg shadow-cyan-500/20 transition-all active:scale-95 disabled:opacity-50"
+                >
+                  {state.connectionState === 'connecting' ? 'CONNECTING...' : 'CONNECT'}
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Button
+                  onClick={() => isPublishing ? stopPublish() : publish(false)}
+                  className={cn("font-black text-xs px-6 h-12 rounded-2xl transition-all active:scale-95", isPublishing ? 'bg-emerald-500 hover:bg-emerald-400 text-slate-950' : 'bg-slate-700 hover:bg-slate-600 text-white')}
+                >
+                  {isPublishing ? 'MIC_ON' : 'MIC_OFF'}
+                </Button>
+                <Button
+                  onClick={disconnect}
+                  className="bg-rose-600 hover:bg-rose-500 text-white font-black text-xs px-8 h-12 rounded-2xl shadow-lg shadow-rose-500/20 transition-all active:scale-95"
+                >
+                  DISCONNECT
+                </Button>
+              </div>
+            )}
           </div>
         </header>
 

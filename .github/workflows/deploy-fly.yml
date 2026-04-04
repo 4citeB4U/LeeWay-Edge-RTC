@@ -1,0 +1,27 @@
+name: Deploy SFU to Fly.io
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'services/sfu/**'
+      - '.github/workflows/deploy-fly.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy leeway-sfu
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy to Fly.io
+        working-directory: services/sfu
+        run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

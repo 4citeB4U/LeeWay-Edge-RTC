@@ -1,0 +1,57 @@
+name: Deploy — GitHub Pages
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'src/**'
+      - 'LeeWay-Edge_RTC.tsx'
+      - 'index.html'
+      - 'vite.config.ts'
+      - 'package*.json'
+      - 'tsconfig.json'
+      - '.github/workflows/deploy-pages.yml'
+
+permissions:
+  contents: write   # needed to push to gh-pages branch
+
+jobs:
+  build-and-deploy:
+    name: Build Vite → gh-pages
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        env:
+          # Point the frontend at the live Fly.io SFU.
+          # Set VITE_SFU_URL as a GitHub Actions secret:
+          #   Settings → Secrets → Actions → New repository secret
+          #   Name: VITE_SFU_URL
+          #   Value: https://leeway-sfu.fly.dev  (your Fly.io app URL)
+          VITE_SIGNALING_URL: ${{ secrets.VITE_SFU_URL && format('wss://{0}/ws', secrets.VITE_SFU_URL_HOST) || '' }}
+          VITE_HTTP_BASE_URL: ${{ secrets.VITE_SFU_URL || '' }}
+        run: npm run build
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          # Writes a .nojekyll file so paths with underscores work correctly
+          enable_jekyll: false

@@ -1,0 +1,68 @@
+# ─── LeeWay SFU — Fly.io configuration ─────────────────────────────────────
+# Deploy:  fly deploy --config services/sfu/fly.toml
+# Secrets: fly secrets set JWT_SECRET=... --config services/sfu/fly.toml
+# ---------------------------------------------------------------------------
+
+app = "leeway-sfu"
+primary_region = "iad"        # US-East — change to match your closest region
+
+[build]
+  dockerfile = "Dockerfile"   # services/sfu/Dockerfile
+
+[env]
+  NODE_ENV          = "production"
+  LOG_LEVEL         = "warn"
+  HTTP_PORT         = "3000"
+  # mediasoup RTP port window — must match rtcMinPort/rtcMaxPort in config.ts
+  # Fly.io exposes these as UDP via the [[services]] block below
+  RTC_MIN_PORT      = "40000"
+  RTC_MAX_PORT      = "40099"
+  # Fly.io injects FLY_PUBLIC_IP at runtime — picked up by config.ts as ANNOUNCED_IP
+  # Set via secret instead of env so it's not baked into the image:
+  #   fly secrets set ANNOUNCED_IP=$(fly ips list -j | jq -r '.[0].address')
+
+[http_service]
+  internal_port       = 3000
+  force_https         = true
+  auto_stop_machines  = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+  [http_service.concurrency]
+    type       = "connections"
+    hard_limit = 200
+    soft_limit = 150
+
+# ─── mediasoup RTP/RTCP UDP port window ─────────────────────────────────────
+# Fly.io allows up to 100 UDP ports per app.  Keep the window tight (100 ports)
+# so the entire range fits.  Matches RTC_MIN_PORT / RTC_MAX_PORT above.
+[[services]]
+  protocol = "udp"
+  internal_port = 40000
+
+  [[services.ports]]
+    port = 40000
+
+[[services]]
+  protocol = "udp"
+  internal_port = 40099
+
+  [[services.ports]]
+    port = 40099
+
+# Fine-grained UDP range — add as many [[services]] entries as needed,
+# or use the fly.io wireguard/private-networking approach for internal peers.
+# For production, prefer: fly ips allocate-v4 --shared and TURN relay.
+
+[checks]
+  [checks.health]
+    grace_period  = "15s"
+    interval      = "30s"
+    method        = "GET"
+    path          = "/health"
+    port          = 3000
+    timeout       = "5s"
+    type          = "http"
+
+[[vm]]
+  size   = "shared-cpu-1x"   # upgrade to performance-1x for production load
+  memory = "512mb"

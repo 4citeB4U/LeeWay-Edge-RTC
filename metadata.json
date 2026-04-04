@@ -1,0 +1,10 @@
+{
+  "name": "LeeWay Edge RTC Command Center",
+  "description": "Mission-critical WebRTC operations dashboard by LeeWay Industries | LeeWay Innovation. Created by Leonard Lee. Self-hosted SFU with real-time peer monitoring, ICE topology, and voice-driven agent interface. No outside vendor dependencies.",
+  "author": "Leonard Lee — LeeWay Industries | LeeWay Innovation",
+  "license": "PROPRIETARY",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

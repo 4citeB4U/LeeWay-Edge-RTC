@@ -24,10 +24,8 @@ export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
 
   // In production (GitHub Pages), VITE_BASE_URL sets the subdirectory path.
-  // e.g. if deployed to https://username.github.io/LeeWay-Edge-RTC-main/
-  // set VITE_BASE_URL=/LeeWay-Edge-RTC-main/ in the GitHub Actions secret.
-  // Leave blank to deploy to the repo's root Pages URL.
-  const base = env.VITE_BASE_URL || '/';
+  // Defaults to /LeeWay-Edge-RTC/ which matches https://4citeb4u.github.io/LeeWay-Edge-RTC/
+  const base = env.VITE_BASE_URL || '/LeeWay-Edge-RTC/';
 
   return {
     base,

@@ -2,6 +2,10 @@
   <img src="./docs/images/banner.png" alt="LeeWay Edge RTC — Agent Lee's Live Voice & RTC Backbone" width="1200" />
 </div>
 
+<div align="center">
+  <img src="./public/leeway-edge-rtc.png" alt="LeeWay Edge RTC" width="800" />
+</div>
+
 # LeeWay Edge RTC — Agent Lee's Real-Time Voice Backbone
 
 **LeeWay Industries | LeeWay Innovation — Created by Leonard Lee**

@@ -5,24 +5,28 @@ on:
     branches: [main, master]
     paths:
       - 'src/**'
+      - 'public/**'
       - 'LeeWay-Edge_RTC.tsx'
       - 'index.html'
       - 'vite.config.ts'
       - 'package*.json'
       - 'tsconfig.json'
       - '.github/workflows/deploy-pages.yml'
+  workflow_dispatch:
 
 permissions:
-  contents: write   # needed to push to gh-pages branch
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
-    name: Build Vite → gh-pages
+  build:
+    name: Build Vite
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -38,20 +42,26 @@ jobs:
 
       - name: Build
         env:
-          # Point the frontend at the live Fly.io SFU.
-          # Set VITE_SFU_URL as a GitHub Actions secret:
-          #   Settings → Secrets → Actions → New repository secret
-          #   Name: VITE_SFU_URL
-          #   Value: https://leeway-sfu.fly.dev  (your Fly.io app URL)
-          VITE_SIGNALING_URL: ${{ secrets.VITE_SFU_URL && format('wss://{0}/ws', secrets.VITE_SFU_URL_HOST) || '' }}
-          VITE_HTTP_BASE_URL: ${{ secrets.VITE_SFU_URL || '' }}
+          # Hardcoded to match https://4citeb4u.github.io/LeeWay-Edge-RTC/
+          VITE_BASE_URL: /LeeWay-Edge-RTC/
+          # SFU connection — set VITE_SFU_URL_HOST as a GitHub Actions secret
+          VITE_SIGNALING_URL: ${{ secrets.VITE_SFU_URL_HOST && format('wss://{0}/ws', secrets.VITE_SFU_URL_HOST) || '' }}
+          VITE_HTTP_BASE_URL: ${{ secrets.VITE_SFU_URL_HOST && format('https://{0}', secrets.VITE_SFU_URL_HOST) || '' }}
         run: npm run build
 
-      - name: Deploy to GitHub Pages
-        id: deploy
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-          # Writes a .nojekyll file so paths with underscores work correctly
-          enable_jekyll: false
+          path: ./dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deploy
+        uses: actions/deploy-pages@v4

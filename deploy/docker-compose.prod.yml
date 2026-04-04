@@ -1,0 +1,25 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# Production override for docker-compose.yml
+# Usage: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+# ──────────────────────────────────────────────────────────────────────────────
+services:
+  sfu:
+    image: ghcr.io/4citeb4u/leeway-sfu:latest   # use published image
+    restart: always
+    env_file:
+      - /etc/leeway/sfu.env       # mount secret env from host
+    environment:
+      NODE_ENV: production
+      LOG_LEVEL: warn
+    ports:
+      - "3000:3000"
+      - "40000-49999:40000-49999/udp"
+
+  web-demo:
+    image: ghcr.io/4citeb4u/leeway-web-demo:latest
+    restart: always
+
+  coturn:
+    restart: always
+    volumes:
+      - /etc/leeway/turnserver.conf:/etc/coturn/turnserver.conf:ro

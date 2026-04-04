@@ -1,0 +1,74 @@
+/*
+LEEWAY HEADER — DO NOT REMOVE
+REGION: CLIENT.WEB-DEMO
+TAG: CLIENT.STYLES.GLOBAL
+WHO = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+LICENSE: PROPRIETARY
+*/
+
+:root {
+  --bg-base: #020617;
+  --bg-panel: #0a1628;
+  --bg-card: #0f1f3a;
+  --border: #1e3a5f;
+  --neon: #00ffd1;
+  --fluo: #00b4ff;
+  --pastel: #c7f0ff;
+  --warn: #ffb800;
+  --danger: #ff3b3b;
+  --success: #00ff88;
+  --text-primary: #e2f0ff;
+  --text-muted: #7aa3c8;
+  --radius: 8px;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  overflow: hidden;
+}
+
+a {
+  color: var(--fluo);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--neon);
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-panel);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--fluo);
+}

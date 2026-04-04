@@ -41,12 +41,18 @@ export interface VoicePreset {
  * Values are chosen to be comfortable on both desktop speakers and headsets.
  */
 export const VOICE_PRESETS: readonly VoicePreset[] = [
-  // ── Male presets ─────────────────────────────────────────────────────────────
+  // ── Male presets — prefer Microsoft Neural, fall back to standard ────────────
   {
     id: 'M1',
     label: 'Agent Lee — Command',
     gender: 'male',
-    voiceNameHints: ['Daniel', 'David', 'James', 'Guy', 'Mark'],
+    voiceNameHints: [
+      'Microsoft Guy Online (Natural)',
+      'Microsoft Eric Online (Natural)',
+      'Microsoft Roger Online (Natural)',
+      'Microsoft Brian Online (Natural)',
+      'Guy', 'Daniel', 'David', 'James',
+    ],
     rate: 1.0, pitch: 0.95, volume: 1.0,
     description: 'Authoritative, clear command voice — default for RTC ops',
   },
@@ -54,7 +60,12 @@ export const VOICE_PRESETS: readonly VoicePreset[] = [
     id: 'M2',
     label: 'Agent Lee — Calm',
     gender: 'male',
-    voiceNameHints: ['David', 'Alex', 'Tom', 'Fred', 'Albert'],
+    voiceNameHints: [
+      'Microsoft Davis Online (Natural)',
+      'Microsoft Tony Online (Natural)',
+      'Microsoft Steffan Online (Natural)',
+      'Davis', 'David', 'Alex', 'Tom',
+    ],
     rate: 0.88, pitch: 0.90, volume: 0.85,
     description: 'Measured, reassuring — best for low-urgency status reports',
   },
@@ -62,16 +73,25 @@ export const VOICE_PRESETS: readonly VoicePreset[] = [
     id: 'M3',
     label: 'Agent Lee — Alert',
     gender: 'male',
-    voiceNameHints: ['Daniel', 'James', 'Guy', 'Diego'],
+    voiceNameHints: [
+      'Microsoft Christopher Online (Natural)',
+      'Microsoft Jason Online (Natural)',
+      'Christopher', 'Daniel', 'James', 'Guy',
+    ],
     rate: 1.15, pitch: 1.05, volume: 1.0,
     description: 'Faster, higher energy — used when SENTINEL raises an alert',
   },
-  // ── Female presets ───────────────────────────────────────────────────────────
+  // ── Female presets — prefer Microsoft Neural ──────────────────────────────
   {
     id: 'F1',
     label: 'Agent ARIA — Neutral',
     gender: 'female',
-    voiceNameHints: ['Samantha', 'Victoria', 'Ava', 'Allison', 'Kate'],
+    voiceNameHints: [
+      'Microsoft Aria Online (Natural)',
+      'Microsoft Jenny Online (Natural)',
+      'Microsoft Sara Online (Natural)',
+      'Aria', 'Jenny', 'Samantha', 'Victoria', 'Ava',
+    ],
     rate: 1.0, pitch: 1.0, volume: 0.90,
     description: 'Clear, professional — default for health monitoring readouts',
   },
@@ -79,7 +99,12 @@ export const VOICE_PRESETS: readonly VoicePreset[] = [
     id: 'F2',
     label: 'Agent ARIA — Warm',
     gender: 'female',
-    voiceNameHints: ['Karen', 'Susan', 'Fiona', 'Moira', 'Hazel'],
+    voiceNameHints: [
+      'Microsoft Michelle Online (Natural)',
+      'Microsoft Monica Online (Natural)',
+      'Microsoft Nancy Online (Natural)',
+      'Michelle', 'Monica', 'Karen', 'Susan', 'Fiona',
+    ],
     rate: 0.92, pitch: 0.97, volume: 0.88,
     description: 'Softer, warmer — used for advisory and recommendation output',
   },
@@ -87,7 +112,12 @@ export const VOICE_PRESETS: readonly VoicePreset[] = [
     id: 'F3',
     label: 'Agent ARIA — Precise',
     gender: 'female',
-    voiceNameHints: ['Zira', 'Victoria', 'Kathy', 'Vicki', 'Tessa'],
+    voiceNameHints: [
+      'Microsoft Elizabeth Online (Natural)',
+      'Microsoft Cora Online (Natural)',
+      'Microsoft Ana Online (Natural)',
+      'Elizabeth', 'Zira', 'Victoria', 'Kathy',
+    ],
     rate: 1.08, pitch: 1.02, volume: 0.95,
     description: 'Crisp, technical — ideal for diagnostic and governor reports',
   },

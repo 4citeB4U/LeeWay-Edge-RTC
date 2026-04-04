@@ -29,8 +29,8 @@ export interface VoiceEntry {
 }
 
 // ─── Gender heuristic ─────────────────────────────────────────────────────────
-const MALE_PATTERN = /david|james|guy|mark|daniel|alex|fred|tom|eric|jorge|eddy|albert|google uk english male|microsoft david|microsoft james|google\u00a0us\u00a0english/i;
-const FEMALE_PATTERN = /samantha|victoria|ava|allison|susan|kathy|vicki|fiona|moira|tessa|kate|karen|zira|google uk english female|google us english|microsoft zira|hazel/i;
+const MALE_PATTERN = /\b(david|james|guy|mark|daniel|alex|fred|tom|eric|jorge|eddy|albert|ryan|brian|christopher|davis|jason|roger|steffan|tony|liam|oliver|ethan|noah|alfie|elliot|thomas)\b|microsoft (guy|eric|brian|ryan|christopher|davis|jason|roger|steffan|tony|liam|oliver|thomas)|google uk english male/i;
+const FEMALE_PATTERN = /\b(samantha|victoria|ava|allison|susan|kathy|vicki|fiona|moira|tessa|kate|karen|zira|hazel|aria|jenny|michelle|sara|monica|nancy|ana|elizabeth|cora|maisie|sonia|libby|bella|phoebe|hollie|isla|lily|ruby|abbi|olivia)\b|microsoft (aria|jenny|michelle|sara|monica|nancy|ana|elizabeth|cora|maisie|sonia|libby)|google uk english female|microsoft zira/i;
 
 function detectGender(name: string): VoiceGender {
   if (MALE_PATTERN.test(name))   return 'male';

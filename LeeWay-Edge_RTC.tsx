@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { VoiceStudio } from './src/voice/VoiceStudio';
 import { 
   Activity, 
   AlertTriangle, 
@@ -237,6 +238,7 @@ export default function LeeWayEdgeRtc() {
   const { state, addEvent, connect, disconnect, publish, stopPublish, isPublishing } = useRTCStore();
   const [series, setSeries] = useState<any[]>([]);
   const [roomInput, setRoomInput] = useState('leeway-main');
+  const [showVoiceStudio, setShowVoiceStudio] = useState(false);
 
   // Initialize chart with zeros
   useEffect(() => {
@@ -310,6 +312,12 @@ export default function LeeWayEdgeRtc() {
                 <span className="text-cyan-400 font-black text-sm font-mono">{state.roomName || roomInput}</span>
               </div>
             </div>
+            <Button
+              onClick={() => setShowVoiceStudio(true)}
+              className="bg-slate-800 hover:bg-slate-700 border border-white/10 text-white font-black text-xs px-5 h-12 rounded-2xl transition-all active:scale-95"
+            >
+              🎙 Voice Studio
+            </Button>
             {state.connectionState !== 'connected' ? (
               <div className="flex items-center gap-2">
                 <input
@@ -684,6 +692,11 @@ export default function LeeWayEdgeRtc() {
           background: rgba(255, 255, 255, 0.2);
         }
       `}} />
+
+      {/* Voice Studio Modal */}
+      {showVoiceStudio && (
+        <VoiceStudio onClose={() => setShowVoiceStudio(false)} />
+      )}
     </div>
   );
 }

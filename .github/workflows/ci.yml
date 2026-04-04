@@ -5,11 +5,16 @@ on:
     branches: [main, master]
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   # ─── SFU service: typecheck + lint ──────────────────────────────────────────
   sfu-typecheck:
     name: SFU – TypeScript
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     defaults:
       run:
         working-directory: services/sfu
@@ -33,6 +38,8 @@ jobs:
   web-demo-typecheck:
     name: Web demo – TypeScript
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     defaults:
       run:
         working-directory: clients/web-demo
@@ -59,6 +66,8 @@ jobs:
   docker-sfu:
     name: Docker – SFU image
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: sfu-typecheck
     steps:
       - uses: actions/checkout@v4
@@ -79,6 +88,8 @@ jobs:
   docker-web-demo:
     name: Docker – web demo image
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: web-demo-typecheck
     steps:
       - uses: actions/checkout@v4

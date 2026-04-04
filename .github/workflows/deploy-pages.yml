@@ -5,7 +5,11 @@ on:
     branches:
       - main
     paths:
-      - 'clients/web-demo/**'
+      - 'src/**'
+      - 'LeeWay-Edge_RTC.tsx'
+      - 'index.html'
+      - 'vite.config.ts'
+      - 'package.json'
       - '.github/workflows/deploy-pages.yml'
   workflow_dispatch:
 
@@ -20,7 +24,7 @@ concurrency:
 
 jobs:
   build:
-    name: Build web-demo
+    name: Build LeeWay Edge RTC UI
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -31,14 +35,11 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: clients/web-demo/package-lock.json
 
       - name: Install dependencies
-        working-directory: clients/web-demo
         run: npm ci
 
       - name: Build
-        working-directory: clients/web-demo
         env:
           VITE_BASE_URL: /LeeWay-Edge-RTC/
           VITE_HTTP_BASE_URL: https://leeway-sfu.fly.dev
@@ -48,7 +49,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: clients/web-demo/dist
+          path: dist
 
   deploy:
     name: Deploy to GitHub Pages

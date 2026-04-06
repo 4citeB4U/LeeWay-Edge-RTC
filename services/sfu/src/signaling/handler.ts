@@ -340,7 +340,7 @@ async function handleMessage(conn: PeerConnection, msg: IncomingMsg): Promise<vo
 // ─── Broadcast helpers ─────────────────────────────────────────────────────────
 
 // Map roomId -> Set of peer connections
-const roomConnections = new Map<string, Map<string, PeerConnection>>();
+export const roomConnections = new Map<string, Map<string, PeerConnection>>();
 
 // All authenticated connections (for agent broadcasts)
 const allConnections = new Set<WebSocket>();

@@ -24,6 +24,9 @@ import { logger } from './logger.js';
 import { config } from './config.js';
 import { agentRegistry, agentRuntime, agentBus } from './agents/registry.js';
 
+import { getRooms } from './mediasoup/room.js';
+import { roomConnections } from './signaling/handler.js';
+
 export async function createServer(): Promise<http.Server> {
   const app = express();
   app.use(express.json());
@@ -59,6 +62,38 @@ export async function createServer(): Promise<http.Server> {
     const snap = agentRegistry.getSnapshot(req.params['codename'] ?? '');
     if (!snap) { res.status(404).json({ error: 'Agent not found' }); return; }
     res.json(snap);
+  });
+
+  // ─── Connections Monitoring ────────────────────────────────────────────────
+  app.get('/connections', (_req, res) => {
+    // roomConnections: Map<roomId, Map<peerId, PeerConnection>>
+    const out: any[] = [];
+    for (const [roomId, peers] of roomConnections.entries()) {
+      for (const [peerId, conn] of peers.entries()) {
+        out.push({
+          roomId,
+          peerId,
+          authenticated: conn.authenticated,
+          wsState: conn.ws.readyState,
+        });
+      }
+    }
+    res.json(out);
+  });
+
+  // ─── Rooms Monitoring ─────────────────────────────────────────────────────
+  app.get('/rooms', (_req, res) => {
+    const rooms = getRooms().map(r => ({
+      id: r.id,
+      peerCount: r.getPeerCount(),
+      peers: Array.from(r.getPeers()).map(p => ({
+        id: p.id,
+        transports: Array.from(p.transports.keys()),
+        producers: Array.from(p.producers.keys()),
+        consumers: Array.from(p.consumers.keys()),
+      })),
+    }));
+    res.json(rooms);
   });
 
   // Agent runtime status summary

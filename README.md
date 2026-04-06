@@ -58,6 +58,37 @@ VITE_VOICE_WS_URL=wss://leeway-sfu.fly.dev/ws
 
 ---
 
+## Quickstart & Operations
+
+### 1. Clone and Deploy
+
+```bash
+git clone https://github.com/4citeB4U/LeeWay-Edge-RTC-main.git
+cd LeeWay-Edge-RTC-main
+cp services/sfu/.env.example services/sfu/.env
+docker compose -f deploy/docker-compose.yml up --build
+```
+
+### 2. Connect a Client or App
+
+- **Web demo:** Open http://localhost:8080 (or your deployed URL)
+- **Custom app:** See [docs/integration.md](./docs/integration.md) for WebRTC/mediasoup integration
+
+### 3. Monitor & Operate
+
+- **Health:** `GET /health` (returns status)
+- **Metrics:** `GET /metrics` (Prometheus/Grafana)
+- **Agents:** `GET /agents` (agent registry)
+- **Connections:** `GET /connections` (active peer connections)
+- **Rooms:** `GET /rooms` (active rooms and peer details)
+
+### 4. Documentation
+
+- **System Overview:** [docs/system-overview.md](./docs/system-overview.md)
+- **Full docs:** [docs/README.md](./docs/README.md)
+
+---
+
 ## Architecture
 
 ```mermaid

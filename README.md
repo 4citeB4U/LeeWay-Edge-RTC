@@ -30,6 +30,7 @@
          BRAIN & IDENTITY                              VOICE & PRESENCE
 ```
 
+
 | Repo | Purpose | Connect via |
 |------|---------|-------------|
 | **agent-lee-voxel-os** | Agent Lee's brain — identity, 20 agents, LLM, memory, UI | `VITE_VOICE_WS_URL` → this SFU |
@@ -39,7 +40,7 @@
 
 Set one environment variable in voxel-os and the two systems are linked:
 ```
-VITE_VOICE_WS_URL=wss://leeway-sfu.fly.dev/ws
+VITE_VOICE_WS_URL=wss://leeway-sfu.fly.io/ws
 ```
 
 ---

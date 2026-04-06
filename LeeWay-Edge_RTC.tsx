@@ -276,7 +276,7 @@ export default function LeeWayEdgeRtc() {
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-cyan-500/10 blur-[120px] rounded-full animate-pulse" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600/10 blur-[120px] rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay" />
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.fly.dev/noise.svg')] opacity-20 mix-blend-overlay" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-[1600px] p-4 md:p-8 space-y-8">

@@ -7,7 +7,7 @@ ICON_ASCII: family=lucide glyph=layout-dashboard
 5WH:
   WHAT = Root React component — renders LeeWay Edge RTC dashboard
   WHY  = Single composition root for the entire UI surface
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = src/App.tsx
   WHEN = 2026
   HOW  = Imports and renders <LeeWayEdgeRtc /> from root LeeWay-Edge_RTC.tsx

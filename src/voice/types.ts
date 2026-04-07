@@ -7,7 +7,7 @@ ICON_ASCII: family=lucide glyph=mic
 5WH:
   WHAT = Shared TypeScript types for the LeeWay Voice Loop system
   WHY  = Provides a single contract across STT, TTS, persona, and loop controller
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = src/voice/types.ts
   WHEN = 2026
   HOW  = Pure type declarations — no runtime code

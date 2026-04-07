@@ -7,7 +7,7 @@ ICON_ASCII: family=lucide glyph=server
 5WH:
   WHAT = LeeWay SFU entry point — initialises mediasoup workers and HTTP/WS server
   WHY  = Bootstraps the production-grade, self-hosted WebRTC Selective Forwarding Unit
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = services/sfu/src/index.ts
   WHEN = 2026
   HOW  = dotenv config load → createWorkers() → createServer() → agentRegistry.startAll()
@@ -15,12 +15,21 @@ AGENTS: ASSESS ALIGN AUDIT
 LICENSE: PROPRIETARY
 */
 import 'dotenv/config';
+import { enforceLivingOrganism } from './governance-guard.js';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createWorkers, closeWorkers } from './mediasoup/worker.js';
 import { createServer } from './server.js';
 import { agentRuntime } from './agents/registry.js';
 import { logger } from './logger.js';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const ROOT_PATH = path.join(__dirname, '../../..');
+
 async function main(): Promise<void> {
+  // Enforce Living Organism Policy (Poison Pill Guard)
+  enforceLivingOrganism(ROOT_PATH);
+
   await createWorkers();
   await createServer();
 }

@@ -9,7 +9,7 @@ ICON_ASCII: family=lucide glyph=list-ordered
   WHY  = Ensures HIGH-priority system alerts barge in and cancel ambient speech;
          NORMAL responses are ordered correctly; LOW ambient filler never blocks
          operational comms — all with zero vendor TTS dependency
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = src/voice/speech-queue.ts
   WHEN = 2026
   HOW  = SpeechSynthesisUtterance + custom priority queue;

@@ -7,7 +7,7 @@ ICON_ASCII: family=lucide glyph=layers
 5WH:
   WHAT = Shared TypeScript contracts for every LeeWay agent in the system
   WHY  = Single source of truth ensures all agents follow the same governance protocol
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = services/sfu/src/agents/types.ts
   WHEN = 2026
   HOW  = Pure types — imported by every agent, registry, governance engine, and runtime

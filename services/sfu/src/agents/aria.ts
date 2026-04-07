@@ -7,7 +7,7 @@ ICON_ASCII: family=lucide glyph=heart-pulse
 5WH:
   WHAT = ARIA — Adaptive RTC Infrastructure Agent | Health Monitor NPC
   WHY  = Continuously pings /health endpoint and broadcasts anomalies to all clients
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = services/sfu/src/agents/aria.ts
   WHEN = 2026
   HOW  = setInterval 30s → HTTP GET /health → agentBus.emit('agentEvent')

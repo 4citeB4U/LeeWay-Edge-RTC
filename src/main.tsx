@@ -7,7 +7,7 @@ ICON_ASCII: family=lucide glyph=power
 5WH:
   WHAT = React 19 application entry point
   WHY  = Bootstraps LeeWay Edge RTC into the DOM
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = src/main.tsx
   WHEN = 2026
   HOW  = ReactDOM.createRoot + StrictMode render of <App />

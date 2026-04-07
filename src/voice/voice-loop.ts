@@ -8,7 +8,7 @@ ICON_ASCII: family=lucide glyph=radio
   WHAT = LeeWay Voice Loop — the real-time voice heartbeat for Agent Lee
   WHY  = Wires STT → local brain (persona.ts) → TTS into a continuous,
          self-restarting loop so Agent Lee is always listening and always responding
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = src/voice/voice-loop.ts
   WHEN = 2026
   HOW  = Web Speech API (SpeechRecognition continuous mode) for STT;

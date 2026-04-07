@@ -9,7 +9,7 @@ ICON_ASCII: family=lucide glyph=trending-up
   WHY  = Monitors peer count + CPU against thresholds and issues scaling orders
          so the SFU can handle 1000s of concurrent users across countless apps
          while not wasting resources on edge devices during idle periods
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = services/sfu/src/agents/scaler.ts
   WHEN = 2026
   HOW  = setInterval 45s → check rooms/peers/CPU → compare against capacity bands

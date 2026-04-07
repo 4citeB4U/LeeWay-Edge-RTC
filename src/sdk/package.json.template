@@ -1,0 +1,38 @@
+{
+  "name": "@leeway-innovations/rtc-sdk",
+  "version": "1.0.0",
+  "description": "Sovereign, Edge-Computing Decentralized Communication Hybrid SDK",
+  "main": "dist/index.js",
+  "min": "dist/index.min.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./ui": "./dist/ui.js",
+    "./headless": "./dist/headless.js",
+    "./native": "./dist/native.js"
+  },
+  "scripts": {
+    "build": "tsc && vite build"
+  },
+  "dependencies": {
+    "mediasoup-client": "^3.7.0",
+    "react-native-webrtc": "^118.0.0",
+    "lucide-react": "^0.344.0",
+    "framer-motion": "^11.0.0",
+    "recharts": "^2.12.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "keywords": [
+    "webrtc",
+    "sfu",
+    "mesh",
+    "leeway",
+    "edge",
+    "communication"
+  ],
+  "author": "Leonard Lee | LeeWay Innovations",
+  "license": "PROPRIETARY"
+}

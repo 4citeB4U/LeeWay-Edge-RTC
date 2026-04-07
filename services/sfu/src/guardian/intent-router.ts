@@ -9,7 +9,7 @@ ICON_ASCII: family=lucide glyph=git-branch
   WHY  = The fast lane MUST never block on an LLM; all intent classification is
          pure regex in under 1 ms so the system remains responsive at 0 CPU cost
          on Mode A (no LLM at all)
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = services/sfu/src/guardian/intent-router.ts
   WHEN = 2026
   HOW  = Ordered rule table: each entry is a regex + IntentMatch.

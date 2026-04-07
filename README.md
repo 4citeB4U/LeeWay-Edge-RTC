@@ -49,12 +49,14 @@ VITE_VOICE_WS_URL=wss://leeway-sfu.fly.io/ws
 
 | Capability | Detail |
 |-----------|--------|
-| **Consistent voice character** | 6 pinnable voice presets (3M + 3F) — same character voice regardless of device or browser |
+| **Premium HD voice** | 6 pinnable neural-first voice presets (3M + 3F) — studio quality, multi-lingual support |
 | **Live emotion** | Rule-based emotion engine maps RTC state and response text → TTS rate/pitch/pause deltas in real time |
 | **Priority speech queue** | HIGH barge-in, NORMAL dialogue, LOW ambient — Agent Lee never talks over a critical alert |
 | **Two-lane architecture** | Fast lane (deterministic, <10 ms) for voice commands; Slow lane (async) for RTC health diagnostics + optional local LLM |
+| **Vision Fast Lane** | AGT-009 OBSERVER processes video metadata locally on-edge for real-time object identification |
+| **Advanced AI Security** | AGT-004 SENTINEL monitors for malicious prompt injection and hacker steerage patterns |
 | **Runtime Mode A/B/C** | Ultra-light (Pi 5 safe) · Balanced · Full — switch by voice or GOVERNOR agent |
-| **Self-healing SFU** | 8 NPC agents manage room lifecycle, anomaly detection, auto-repair, policy enforcement, auto-scaling |
+| **Self-healing SFU** | 9 NPC agents manage room lifecycle, anomaly detection, auto-repair, policy enforcement, auto-scaling |
 | **Zero vendor AI** | No Gemini key, no OpenAI, no cloud TTS — runs offline once deployed |
 
 ---
@@ -110,7 +112,7 @@ graph TB
         SW["stats-worker.ts\nPeer health 0-100"]
         SUM["summary-worker.ts\nOptional local LLM bridge"]
       end
-      subgraph FLEET["8 Agent Fleet"]
+      subgraph FLEET["9 Agent Fleet"]
         ARIA["ARIA AGT-001"]
         VECTOR["VECTOR AGT-002"]
         WARD["WARD AGT-003"]
@@ -119,6 +121,7 @@ graph TB
         REPAIR["REPAIR AGT-006"]
         GOVERNOR["GOVERNOR AGT-007"]
         SCALER["SCALER AGT-008"]
+        OBSERVER["OBSERVER AGT-009"]
       end
     end
     subgraph VFRONT["Browser Client — src/"]
@@ -152,6 +155,7 @@ graph TB
 flowchart LR
   subgraph FAST["⚡ FAST LANE — Always on — &lt;10 ms"]
     MIC["Mic"] --> STT["Web STT"] --> IR2["intent-router\nclassifyIntent()"] --> RULES["Rule agents"] --> TTS2["speechQueue\nemotion-aware"]
+    CAM["Cam"] --> OBS["OBSERVER\nReal-time Vision"] --> VISION["Object Recognition"]
   end
 
   subgraph SLOW["🧠 SLOW LANE — Async — Optional LLM"]
@@ -159,6 +163,7 @@ flowchart LR
   end
 
   FAST <-->|"IntentMatch events"| SLOW
+  VISION -->|"Visual Metadata"| SLOW
 ```
 
 | Mode | LLM | Dashboard | Tick speed | Pi 5 safe |
@@ -175,14 +180,14 @@ Switch by voice command: *"switch to minimal mode"* · *"full mode"* · *"balanc
 
 Agent Lee has a consistent voice character across all devices. Six presets are stored in `src/voice/voice-presets.ts` and persisted to `localStorage`.
 
-| Preset | Character | Gender | Emotion best for |
-|--------|-----------|--------|-----------------|
-| **M1** — Command | Agent Lee default | Male | Alerts, instructions, RTC ops |
-| **M2** — Calm | Agent Lee relaxed | Male | Status reports, idle monitoring |
-| **M3** — Alert | Agent Lee urgent | Male | SENTINEL critical flags |
-| **F1** — Neutral | Agent ARIA default | Female | Health readouts, diagnostics |
-| **F2** — Warm | Agent ARIA advisor | Female | Recommendations, suggestions |
-| **F3** — Precise | Agent ARIA technical | Female | Governance and policy reports |
+| Preset | Character | Gender | Emotion best for | Premium HD |
+|--------|-----------|--------|-----------------|:---:|
+| **M1** — Command | Agent Lee default | Male | Alerts, instructions, RTC ops | ✅ |
+| **M2** — Calm | Agent Lee relaxed | Male | Status reports, idle monitoring | ✅ |
+| **M3** — Alert | Agent Lee urgent | Male | SENTINEL critical flags | ✅ |
+| **F1** — Neutral | Agent ARIA default | Female | Health readouts, diagnostics | ✅ |
+| **F2** — Warm | Agent ARIA advisor | Female | Recommendations, suggestions | — |
+| **F3** — Precise | Agent ARIA technical | Female | Governance and policy reports | ✅ |
 
 ```mermaid
 flowchart LR
@@ -197,7 +202,7 @@ flowchart LR
 
 ## Agent Fleet
 
-8 always-on NPC agents run inside the same Node.js process as the SFU — zero extra spawned processes.
+9 always-on NPC agents run inside the same Node.js process as the SFU — zero extra spawned processes.
 
 ```mermaid
 graph LR
@@ -205,8 +210,9 @@ graph LR
     A1["① ARIA\nVoice + Health Coordination"]
     A2["② VECTOR\nNetwork Analytics + Metrics"]
     A3["③ WARD\nRoom Lifecycle + Peer Mgmt"]
-    A4["④ SENTINEL\nAnomaly Detection + Alerts"]
+    A4["④ SENTINEL\nSecurity + AI Hacker Guard"]
     A5["⑤ NEXUS\nOrchestration + Event Bus"]
+    A9["⑨ OBSERVER\nVision Perception"]
   end
   subgraph INFRA_T["Infrastructure Tier"]
     A6["⑥ REPAIR\nSelf-Healing + Reconciliation"]
@@ -215,7 +221,7 @@ graph LR
   subgraph OVER_T["Oversight Tier"]
     A7["⑦ GOVERNOR\nPolicy Engine + Enforcement"]
   end
-  A5 <--> A1 & A2 & A3 & A4
+  A5 <--> A1 & A2 & A3 & A4 & A9
   A7 --> CORE_T & INFRA_T
   A4 --> A6
   A8 --> A7
@@ -226,11 +232,12 @@ graph LR
 | `AGT-001` | **ARIA** | core | Voice coordination, health monitoring, greeting, status narration | event-driven |
 | `AGT-002` | **VECTOR** | core | RTC network analytics, packet loss trend analysis, bitrate watches | 5 s |
 | `AGT-003` | **WARD** | core | Room lifecycle, peer mute/kick, ICE restart, session cleanup | 10 s |
-| `AGT-004` | **SENTINEL** | core | Anomaly detection, error rate spike alerts, security scans | 3 s |
+| `AGT-004` | **SENTINEL** | core | Security scans, error rate spike alerts, AI Hacker Protection | 3 s |
 | `AGT-005` | **NEXUS** | core | Agent orchestration, AgentRuntime watchdog, broadcast coordination | 15 s |
 | `AGT-006` | **REPAIR** | infrastructure | Auto-repair: reconnect peers, restart workers, reconcile room state | triggered |
 | `AGT-007` | **GOVERNOR** | oversight | Policy engine, rule enforcement, agent suspend/resume, audit log | 30 s |
 | `AGT-008` | **SCALER** | infrastructure | CPU/load monitoring, worker count adjustment, runtime mode switching | 60 s |
+| `AGT-009` | **OBSERVER** | core | Vision perception, real-time object identification and scene analysis | 5 s |
 
 → Full detail: [docs/agents.md](docs/agents.md) · [docs/guardian-core.md](docs/guardian-core.md)
 

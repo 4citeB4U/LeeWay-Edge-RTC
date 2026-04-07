@@ -8,7 +8,7 @@ ICON_ASCII: family=lucide glyph=mic
   WHAT = Web Speech API global type declarations (not yet in TS DOM lib)
   WHY  = Provides SpeechRecognition, SpeechGrammarList, and related interfaces
          for the voice loop and any other browser STT consumers
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
          (Declarations adapted from MDN / open Web Speech API spec)
   WHERE = src/speech-recognition.d.ts
   WHEN = 2026

@@ -1,3 +1,19 @@
+/*
+LEEWAY HEADER — DO NOT REMOVE
+REGION: CORE.ARCH.SECURE
+TAG: CORE.INTERNAL.SYSTEM
+COLOR_ONION_HEX: NEON=#00FFD1 FLUO=#00B4FF PASTEL=#C7F0FF
+ICON_ASCII: family=lucide glyph=binary
+5WH:
+  WHAT = LeeWay Core Logic
+  WHY  = Ensures baseline architectural compliance with the Living Organism integrity guard
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
+  WHERE = e:/AgentLeecompletesystem/LeeWay-Edge-RTC-main/
+  WHEN = 2026
+  HOW  = Governance Recursive Patch v43.5
+AGENTS: AUDIT
+LICENSE: PROPRIETARY
+*/
 import { EventEmitter } from 'events';
 import type { AgentEvent } from './types.js';
 

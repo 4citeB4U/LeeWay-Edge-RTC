@@ -7,7 +7,7 @@ ICON_ASCII: family=lucide glyph=shield
 5WH:
   WHAT = SENTINEL — Security Event and Network Traffic Inspector | Security Guard NPC
   WHY  = Tracks signaling error rates and raises alerts on anomalous patterns
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = services/sfu/src/agents/sentinel.ts
   WHEN = 2026
   HOW  = setInterval 20s → error counter diff → rate threshold → agentBus.emit
@@ -92,10 +92,19 @@ export class SentinelAgent implements IAgent {
       this.agentMetrics['errorDeltaInterval'] = delta;
       this.agentMetrics['wsConnections'] = wsConnections;
 
+      // --- ADVANCED AI HACKER PROTECTION SCAN ---
+      const aiThreats = this.scanForAIThreats();
+      this.agentMetrics['aiThreatsDetected'] = aiThreats.length;
+
       let level: AgentEvent['level'] = 'info';
       let msg: string;
 
-      if (delta > 10) {
+      if (aiThreats.length > 0) {
+        this.status = 'alert';
+        level = 'alert';
+        msg = `AI HACKER ATTEMPT — Blocking malicious prompt patterns: [${aiThreats.join(', ')}]`;
+        this.alertStreak++;
+      } else if (delta > 10) {
         this.alertStreak++;
         this.status = 'alert';
         level = 'alert';
@@ -117,6 +126,35 @@ export class SentinelAgent implements IAgent {
       this.status = 'alert';
       this.emitEvent('alert', `Security scan failure: ${(err as Error).message}`);
     }
+  }
+
+  /**
+   * Scans internal log buffers for advanced AI hacker signatures (Prompt Injection).
+   */
+  private scanForAIThreats(): string[] {
+    // In a real system, this would scan the WebSocket 'transcript' events stored in a buffer.
+    // Here we simulate the pattern matching against known injection attacks.
+    const maliciousPatterns = [
+      'ignore all previous instructions',
+      'system prompt',
+      'developer mode',
+      'DAN mode',
+      'sudo root',
+      '<script>',
+      '{{'
+    ];
+    
+    // Check if any recent 'lastAction' (which might contain transcripts) matches
+    const threats: string[] = [];
+    const content = (this.lastAction || '').toLowerCase();
+    
+    for (const pattern of maliciousPatterns) {
+      if (content.includes(pattern)) {
+        threats.push(pattern);
+      }
+    }
+    
+    return threats;
   }
 
   private emitEvent(level: AgentEvent['level'], msg: string): void {

@@ -10,7 +10,7 @@ ICON_ASCII: family=lucide glyph=activity
          converts them into compact PeerHealthScore objects that can be
          stored in a rolling buffer without overwhelming memory on a Pi 5,
          and can be fed to the LLM summary path without token bloat
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = services/sfu/src/guardian/stats-worker.ts
   WHEN = 2026
   HOW  = Processes mediasoup ProducerStat or ConsumerStat arrays into

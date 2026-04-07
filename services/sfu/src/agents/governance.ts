@@ -8,7 +8,7 @@ ICON_ASCII: family=lucide glyph=scale
   WHAT = LeeWay agent governance engine — enforces policy rules across all agents
   WHY  = Keeps every agent within defined action limits, tool permissions, and
          tier constraints; prevents runaway behaviour on edge hardware
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = services/sfu/src/agents/governance.ts
   WHEN = 2026
   HOW  = Policy registry + rate-limiter + rule checker called by AgentRuntime

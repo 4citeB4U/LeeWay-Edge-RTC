@@ -8,7 +8,7 @@ ICON_ASCII: family=lucide glyph=list
   WHAT = LeeWay Agent Registry — instantiates all 8 agents and wires them to the runtime
   WHY  = Single entry-point for agent fleet; enforces one-instance-per-agent rule via
          AgentRuntime; injects lazy runtime references into REPAIR and GOVERNOR
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = services/sfu/src/agents/registry.ts
   WHEN = 2026
   HOW  = Creates agents → registers with AgentRuntime → wires circular deps lazily
@@ -26,6 +26,7 @@ import { NexusAgent }    from './nexus.js';
 import { RepairAgent }   from './repair.js';
 import { GovernorAgent } from './governor.js';
 import { ScalerAgent }   from './scaler.js';
+import { ObserverAgent } from './observer.js';
 import { logger } from '../logger.js';
 
 // ─── Instantiate the full fleet ───────────────────────────────────────────────
@@ -41,6 +42,7 @@ const FLEET: IAgent[] = [
   repair,              // AGT-006  Auto-Repair
   governor,            // AGT-007  Master Governance  (oversight tier — immune to suspension)
   new ScalerAgent(),   // AGT-008  Auto-Scaler
+  new ObserverAgent(), // AGT-009  Vision Perception
 ];
 
 // Register every agent with the shared runtime (throws on duplicate)

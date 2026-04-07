@@ -8,7 +8,7 @@ ICON_ASCII: family=lucide glyph=sliders-horizontal
   WHAT = LeeWay Voice Presets — 3M + 3F pinnable voice profiles
   WHY  = Lets users pin a preferred agent voice; stores only name+rate/pitch/volume —
          no bundled audio, no vendor TTS API — pure browser SpeechSynthesis
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = src/voice/voice-presets.ts
   WHEN = 2026
   HOW  = Static preset table; voiceRegistry resolves the best matching
@@ -32,6 +32,10 @@ export interface VoicePreset {
   rate: number;
   pitch: number;
   volume: number;
+  /** High-Definition flag for premium playback. */
+  hd: boolean;
+  /** Supported language codes (ISO 639-1) */
+  languages: string[];
   description: string;
 }
 
@@ -44,21 +48,23 @@ export const VOICE_PRESETS: readonly VoicePreset[] = [
   // ── Male presets — prefer Microsoft Neural, fall back to standard ────────────
   {
     id: 'M1',
-    label: 'Agent Lee — Command',
+    label: 'Agent Lee — Premium HD',
     gender: 'male',
     voiceNameHints: [
       'Microsoft Guy Online (Natural)',
       'Microsoft Eric Online (Natural)',
       'Microsoft Roger Online (Natural)',
       'Microsoft Brian Online (Natural)',
-      'Guy', 'Daniel', 'David', 'James',
+      'Google US English', 'Daniel', 'David', 'James',
     ],
-    rate: 1.0, pitch: 0.95, volume: 1.0,
-    description: 'Authoritative, clear command voice — default for RTC ops',
+    rate: 1.0, pitch: 0.98, volume: 1.0,
+    hd: true,
+    languages: ['en', 'es', 'fr', 'de'],
+    description: 'Mission-critical command voice — high fidelity, multi-lingual core',
   },
   {
     id: 'M2',
-    label: 'Agent Lee — Calm',
+    label: 'Agent Lee — Calm (Studio)',
     gender: 'male',
     voiceNameHints: [
       'Microsoft Davis Online (Natural)',
@@ -66,51 +72,59 @@ export const VOICE_PRESETS: readonly VoicePreset[] = [
       'Microsoft Steffan Online (Natural)',
       'Davis', 'David', 'Alex', 'Tom',
     ],
-    rate: 0.88, pitch: 0.90, volume: 0.85,
-    description: 'Measured, reassuring — best for low-urgency status reports',
+    rate: 0.88, pitch: 0.92, volume: 0.85,
+    hd: true,
+    languages: ['en', 'it', 'ja'],
+    description: 'Measured, rich texture — optimized for consistent status reports',
   },
   {
     id: 'M3',
-    label: 'Agent Lee — Alert',
+    label: 'Agent Lee — Alert (Ultra)',
     gender: 'male',
     voiceNameHints: [
       'Microsoft Christopher Online (Natural)',
       'Microsoft Jason Online (Natural)',
       'Christopher', 'Daniel', 'James', 'Guy',
     ],
-    rate: 1.15, pitch: 1.05, volume: 1.0,
-    description: 'Faster, higher energy — used when SENTINEL raises an alert',
+    rate: 1.12, pitch: 1.05, volume: 1.00,
+    hd: true,
+    languages: ['en', 'pt', 'ru'],
+    description: 'Aggressive, high-frequency focus — penetrates background noise',
   },
   // ── Female presets — prefer Microsoft Neural ──────────────────────────────
   {
     id: 'F1',
-    label: 'Agent ARIA — Neutral',
+    label: 'Agent ARIA — Premium (Natural)',
     gender: 'female',
     voiceNameHints: [
       'Microsoft Aria Online (Natural)',
       'Microsoft Jenny Online (Natural)',
       'Microsoft Sara Online (Natural)',
-      'Aria', 'Jenny', 'Samantha', 'Victoria', 'Ava',
+      'Google UK English Female', 'Aria', 'Jenny',
     ],
-    rate: 1.0, pitch: 1.0, volume: 0.90,
-    description: 'Clear, professional — default for health monitoring readouts',
+    rate: 1.0, pitch: 1.0, volume: 0.95,
+    hd: true,
+    languages: ['en', 'zh', 'ko'],
+    description: 'Silky smooth neural clarity — default for wide-area monitoring',
   },
   {
     id: 'F2',
-    label: 'Agent ARIA — Warm',
+    label: 'Agent ARIA — Warm (Legacy)',
     gender: 'female',
     voiceNameHints: [
       'Microsoft Michelle Online (Natural)',
       'Microsoft Monica Online (Natural)',
       'Microsoft Nancy Online (Natural)',
-      'Michelle', 'Monica', 'Karen', 'Susan', 'Fiona',
+      'Michelle', 'Monica', 'Karen', 'Susan',
     ],
-    rate: 0.92, pitch: 0.97, volume: 0.88,
-    description: 'Softer, warmer — used for advisory and recommendation output',
+    rate: 0.92, pitch: 0.97, volume: 0.90,
+    hd: false,
+    languages: ['en', 'fr', 'nl'],
+    description: 'Familiar, empathetic advisor voice — compatible with all edge devices',
   },
   {
     id: 'F3',
-    label: 'Agent ARIA — Precise',
+    label: 'Agent ARIA — Technical (HD)',
     gender: 'female',
     voiceNameHints: [
       'Microsoft Elizabeth Online (Natural)',
@@ -118,8 +132,10 @@ export const VOICE_PRESETS: readonly VoicePreset[] = [
       'Microsoft Ana Online (Natural)',
       'Elizabeth', 'Zira', 'Victoria', 'Kathy',
     ],
-    rate: 1.08, pitch: 1.02, volume: 0.95,
-    description: 'Crisp, technical — ideal for diagnostic and governor reports',
+    rate: 1.08, pitch: 1.02, volume: 1.0,
+    hd: true,
+    languages: ['en', 'de', 'pl', 'hi'],
+    description: 'Precision-tuned for data readouts and governance enforcement',
   },
 ] as const;
 

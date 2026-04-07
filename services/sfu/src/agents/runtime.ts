@@ -8,7 +8,7 @@ ICON_ASCII: family=lucide glyph=cpu
   WHAT = LeeWay Agent Runtime — single-process manager for all 8 agents
   WHY  = Ensures only ONE instance of each agent runs, prevents battery drain
          on edge devices by suspending idle agents, and enforces governance
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = services/sfu/src/agents/runtime.ts
   WHEN = 2026
   HOW  = Singleton class; agents register on startup; idle watchdog suspends

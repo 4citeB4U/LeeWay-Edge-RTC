@@ -7,7 +7,7 @@ ICON_ASCII: family=lucide glyph=layers
 5WH:
   WHAT = Mediasoup Room — manages router, transports, producers, consumers per session
   WHY  = Encapsulates all mediasoup state for one named WebRTC room
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = services/sfu/src/mediasoup/room.ts
   WHEN = 2026
   HOW  = One mediasoup Router per room; WebRtcTransport per peer; Producer/Consumer map

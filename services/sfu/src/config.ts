@@ -1,3 +1,19 @@
+/*
+LEEWAY HEADER — DO NOT REMOVE
+REGION: CORE.LEGACY.SECURE
+TAG: CORE.INTERNAL.MODULE
+COLOR_ONION_HEX: NEON=#00FFD1 FLUO=#00B4FF PASTEL=#C7F0FF
+ICON_ASCII: family=lucide glyph=lock
+5WH:
+  WHAT = Migrated LeeWay SFU Internal Logic
+  WHY  = Ensures baseline architectural compliance with the Living Organism integrity guard
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
+  WHERE = services/sfu/src/
+  WHEN = 2026
+  HOW  = Governance Patch v43.4
+AGENTS: AUDIT
+LICENSE: PROPRIETARY
+*/
 import os from 'os';
 
 function requireEnv(key: string, fallback?: string): string {

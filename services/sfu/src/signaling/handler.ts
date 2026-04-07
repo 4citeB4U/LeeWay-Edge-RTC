@@ -7,7 +7,7 @@ ICON_ASCII: family=lucide glyph=zap
 5WH:
   WHAT = WebSocket signaling handler — auth, room join, transport, produce, consume
   WHY  = Drives the mediasoup signaling protocol over persistent WS connections
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = services/sfu/src/signaling/handler.ts
   WHEN = 2026
   HOW  = Message-type dispatch per WS connection; JWT validation; agentBus event relay

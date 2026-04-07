@@ -10,7 +10,7 @@ ICON_ASCII: family=lucide glyph=file-text
          raw stat arrays to an LLM; in Mode A the LLM path is completely disabled
          and summarisation still runs for the dashboard log; in Mode B/C it emits
          compact JSON briefings to whichever local model endpoint is configured
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = services/sfu/src/guardian/summary-worker.ts
   WHEN = 2026
   HOW  = Consumes StatsBuffer.toCompactJSON() at summaryIntervalMs cadence.

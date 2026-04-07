@@ -8,7 +8,7 @@ ICON_ASCII: family=lucide glyph=mic-vocal
   WHAT = LeeWay Voice Registry — discovers and classifies all browser TTS voices at runtime
   WHY  = SpeechSynthesis.getVoices() is async and device-dependent; this registry
          fires onReady once voices are stable and provides gender/quality classification
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = src/voice/voice-registry.ts
   WHEN = 2026
   HOW  = speechSynthesis.getVoices() + voiceschanged event; heuristic name-based

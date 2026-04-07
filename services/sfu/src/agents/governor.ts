@@ -9,7 +9,7 @@ ICON_ASCII: family=lucide glyph=gavel
   WHY  = Top-level oversight agent; audits all 7 peers, enforces policy,
          issues suspend/resume directives, generates governance reports,
          and is the only agent that cannot be auto-suspended
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = services/sfu/src/agents/governor.ts
   WHEN = 2026
   HOW  = setInterval 60s → evaluate all agents via governance.ts → if violations

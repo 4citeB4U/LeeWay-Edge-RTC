@@ -7,7 +7,7 @@ ICON_ASCII: family=lucide glyph=sparkles
 5WH:
   WHAT = Agent Lee Poetry Bank — tiered response flourishes for voice output
   WHY  = Gives Agent Lee's voice a distinct, human, mission-driven character
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = src/voice/poetry.ts
   WHEN = 2026
   HOW  = Keyed string arrays; getPoetryLine() picks randomly per signal type

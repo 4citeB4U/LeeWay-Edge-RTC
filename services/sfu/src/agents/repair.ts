@@ -8,7 +8,7 @@ ICON_ASCII: family=lucide glyph=wrench
   WHAT = REPAIR (AGT-006) — Rapid Error Processing & Automated Infrastructure Recovery
   WHY  = Watches for agents in alert/offline state and triggers auto-resume cycles
          so the system heals itself without operator intervention on edge hardware
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = services/sfu/src/agents/repair.ts
   WHEN = 2026
   HOW  = setInterval 25s → scan all agent snapshots → if status=alert or offline

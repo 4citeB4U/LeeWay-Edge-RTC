@@ -7,7 +7,7 @@ COLOR_ONION_HEX: NEON=#00FFD1 FLUO=#00B4FF PASTEL=#C7F0FF
   WHAT = VoiceStudio — full voice picker, preview, and param editor panel
   WHY  = Lets users select Microsoft Natural Neural voices, adjust rate/pitch/volume,
          preview live, and save their preference to localStorage
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = src/voice/VoiceStudio.tsx
   WHEN = 2026
   HOW  = Uses browser speechSynthesis.getVoices() — Microsoft Neural voices are

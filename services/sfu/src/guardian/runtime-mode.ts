@@ -9,7 +9,7 @@ ICON_ASCII: family=lucide glyph=cpu
   WHY  = Single binary must survive on a Raspberry Pi 5 (Mode A), a beefy VPS
          (Mode C), and everything in between — without code changes; mode is set
          at startup or flipped at runtime via environment var or GOVERNOR agent
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = services/sfu/src/guardian/runtime-mode.ts
   WHEN = 2026
   HOW  = Singleton mutable state + typed config table.

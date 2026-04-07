@@ -7,7 +7,7 @@ ICON_ASCII: family=lucide glyph=cpu
 5WH:
   WHAT = NEXUS — Node Environment eXecution and Uptime Supervisor | Runtime Watchdog NPC
   WHY  = Monitors memory + CPU every 45s and alerts when thresholds are breached
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = services/sfu/src/agents/nexus.ts
   WHEN = 2026
   HOW  = setInterval 45s → process.memoryUsage() + loadavg → agentBus.emit

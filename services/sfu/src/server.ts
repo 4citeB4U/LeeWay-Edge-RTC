@@ -7,7 +7,7 @@ ICON_ASCII: family=lucide glyph=network
 5WH:
   WHAT = LeeWay SFU HTTP + WebSocket server with agent REST endpoints
   WHY  = Exposes /health, /metrics, /agents, /dev/token and WS signaling
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = services/sfu/src/server.ts
   WHEN = 2026
   HOW  = Express HTTP + ws.WebSocketServer + agentRegistry REST layer
@@ -23,13 +23,37 @@ import { issueToken } from './auth.js';
 import { logger } from './logger.js';
 import { config } from './config.js';
 import { agentRegistry, agentRuntime, agentBus } from './agents/registry.js';
+import { validateHeader } from 'leeway-sdk';
 
 import { getRooms } from './mediasoup/room.js';
 import { roomConnections } from './signaling/handler.js';
 
+const LEEWAY_PREFIX = '-leeway23-';
+const API_KEYS = new Set(['-leeway23-MISSION', '-leeway23-ADMIN9', '-leeway23-SDKE22']);
+const BLACKLIST = new Set(['-leeway23-CORRUPT']);
+
+function isValidKey(key: string) {
+  if (!key || !key.startsWith(LEEWAY_PREFIX)) return false;
+  if (key.length < 16) return false;
+  if (BLACKLIST.has(key)) return false;
+  return API_KEYS.has(key);
+}
+
+function authMiddleware(req: any, res: any, next: any) {
+  const key = req.headers['x-api-key'] || req.query.apiKey;
+  if (!isValidKey(key)) {
+    return res.status(401).json({ error: 'LeeWay ACCESS_DENIED: Invalid, Non-Compliant, or Revoked API Key. Codebase must pass LeeWay SDK Audit.' });
+  }
+  next();
+}
+
 export async function createServer(): Promise<http.Server> {
   const app = express();
   app.use(express.json());
+
+  // Apply Auth to specific endpoints
+  app.use('/agents', authMiddleware);
+  app.use('/metrics', authMiddleware);
 
   // ─── Health ────────────────────────────────────────────────────────────────
   app.get('/health', (_req, res) => {
@@ -120,8 +144,25 @@ export async function createServer(): Promise<http.Server> {
   const server = http.createServer(app);
 
   // ─── WebSocket ─────────────────────────────────────────────────────────────
-  const wss = new WebSocketServer({ server, path: '/ws' });
+  const wss = new WebSocketServer({ noServer: true });
   attachSignalingServer(wss);
+
+  server.on('upgrade', (request, socket, head) => {
+    const url = new URL(request.url || '', `http://${request.headers.host}`);
+    if (url.pathname === '/ws') {
+      const key = url.searchParams.get('apiKey');
+      if (!isValidKey(key || '')) {
+        socket.write('HTTP/1.1 401 Unauthorized\r\nConnection: close\r\n\r\nLeeWay Signaling Error: Access Revoked or Non-Compliant.');
+        socket.destroy();
+        return;
+      }
+      wss.handleUpgrade(request, socket, head, (ws) => {
+        wss.emit('connection', ws, request);
+      });
+    } else {
+      socket.destroy();
+    }
+  });
 
   server.listen(config.httpPort, () => {
     logger.info({ port: config.httpPort }, 'LeeWay SFU server listening');

@@ -8,7 +8,7 @@ ICON_ASCII: family=lucide glyph=brain
   WHAT = Agent Lee Persona Engine — rule-based response system (no LLM required)
   WHY  = Delivers fast, on-brand voice responses for known intents and RTC context
          without network latency or API cost
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = src/voice/persona.ts
   WHEN = 2026
   HOW  = Pattern → Response lookup; RTC-aware layer reads live system state;
@@ -172,7 +172,7 @@ const IDENTITY_PATTERNS: PatternEntry[] = [
     /\b(who are you|what are you|your name|tell me about yourself|are you (an )?ai|are you real)\b/i,
     [
       "Agent Lee — voice-first system operator for LeeWay Edge RTC. I watch your streams, talk to your agents, and tell you what's happening.",
-      "I'm Agent Lee. Built by LeeWay Innovation. Schema. Understanding. Guidance. Delivery.",
+      "I'm Agent Lee. Built by LEEWAY INNOVATIONS. Schema. Understanding. Guidance. Delivery.",
       "Agent Lee. Local, real-time, self-aware. I run alongside your RTC stack.",
     ],
   ],

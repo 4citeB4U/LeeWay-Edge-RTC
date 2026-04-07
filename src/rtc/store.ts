@@ -8,7 +8,7 @@ ICON_ASCII: family=lucide glyph=zap
   WHAT = Real useRTCStore hook — connects to LeeWay SFU via WebSocket + mediasoup-client
   WHY  = Replaces the mock store in LeeWay-Edge_RTC.tsx with live SFU signaling,
          transport management, consumer negotiation, and stats polling
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = src/rtc/store.ts
   WHEN = 2026
   HOW  = Fetch JWT from /dev/token → open WS → auth → load mediasoup Device →
@@ -19,6 +19,16 @@ LICENSE: PROPRIETARY
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import * as mediasoupClient from 'mediasoup-client';
+import { VectorAgent } from './vector-agent';
+import { handleFallback, MeshFallback } from './mesh-fallback';
+import { FederationRouter, SfuNode } from './federation-router';
+
+declare global {
+  interface Window {
+    vectorAgentInst?: VectorAgent;
+    meshFallbackInst?: MeshFallback;
+  }
+}
 
 // ---------------------------------------------------------------------------
 // Shared types (re-exported so LeeWay-Edge_RTC.tsx can import from one place)
@@ -84,9 +94,10 @@ export interface RTCState {
 // ---------------------------------------------------------------------------
 
 // Vite proxies /ws → SFU ws://localhost:3000 and /dev → SFU http://localhost:3000
-const WS_URL =
-  (import.meta as { env?: Record<string, string> }).env?.['VITE_SIGNALING_URL'] ??
-  `ws://${window.location.host}/ws`;
+const WS_URL = (apiKey: string) => {
+  const base = (import.meta as { env?: Record<string, string> }).env?.['VITE_SIGNALING_URL'] ?? `ws://${window.location.host}/ws`;
+  return `${base}?apiKey=${apiKey}`;
+};
 
 const TOKEN_URL =
   ((import.meta as { env?: Record<string, string> }).env?.['VITE_HTTP_BASE_URL'] ?? '') +
@@ -122,7 +133,7 @@ const INITIAL_STATE: RTCState = {
 export interface RTCStoreAPI {
   state: RTCState;
   addEvent: (event: Omit<RTCEvent, 'id' | 'timestamp'>) => void;
-  connect: (roomId?: string) => Promise<void>;
+  connect: (roomId?: string, apiKey?: string) => Promise<void>;
   disconnect: () => void;
   publish: (video?: boolean) => Promise<void>;
   stopPublish: () => Promise<void>;
@@ -212,18 +223,38 @@ export function useRTCStore(): RTCStoreAPI {
       }
     }
 
-    setState(prev => ({
-      ...prev,
-      isRelay,
-      selectedCandidatePair: isRelay ? candidatePair : prev.selectedCandidatePair,
-      peers: prev.peers.map((p, i) =>
-        i === 0 ? { ...p, rtt, bitrate: bitrateOut, packetLoss, jitter } : p,
-      ),
-    }));
+    setState(prev => {
+      // Feed data to VECTOR
+      if (!window.vectorAgentInst) window.vectorAgentInst = new VectorAgent();
+      window.vectorAgentInst.push({ rtt, packetLoss, jitter, bitrate: bitrateOut });
+      
+      const action = window.vectorAgentInst.decision();
+      if (action === 'reroute') {
+        console.warn('VECTOR: Switching SFU / Rerouting');
+        // federation failover trigger goes here
+      } else if (action === 'degrade') {
+        console.warn('VECTOR: Lowering quality / degrading video pipeline');
+      }
+
+      // Check mesh fallback conditions
+      if (!window.meshFallbackInst) window.meshFallbackInst = new MeshFallback();
+      if (prev.connectionState === 'failed' || prev.iceState === 'failed' || (!isRelay && rtt > 800)) {
+         handleFallback(prev, window.meshFallbackInst).catch(console.error);
+      }
+
+      return {
+        ...prev,
+        isRelay,
+        selectedCandidatePair: isRelay ? candidatePair : prev.selectedCandidatePair,
+        peers: prev.peers.map((p, i) =>
+          i === 0 ? { ...p, rtt, bitrate: bitrateOut, packetLoss, jitter } : p,
+        ),
+      };
+    });
   }, []);
 
   // ── connect ───────────────────────────────────────────────────────────────
-  const connect = useCallback(async (roomId: string = DEFAULT_ROOM) => {
+  const connect = useCallback(async (roomId: string = DEFAULT_ROOM, apiKey: string = '') => {
     if (wsRef.current?.readyState === WebSocket.OPEN) return; // already connected
 
     setState(prev => ({ ...prev, connectionState: 'connecting', roomName: roomId }));
@@ -242,14 +273,14 @@ export function useRTCStore(): RTCStoreAPI {
       addEvent({ type: 'signaling', level: 'success', message: 'JWT issued — opening WebSocket...', source: 'AUTH' });
 
       // 2. WebSocket
-      const ws = new WebSocket(WS_URL);
+      const ws = new WebSocket(WS_URL(apiKey));
       wsRef.current = ws;
 
       await new Promise<void>((res, rej) => {
         ws.onopen  = () => res();
-        ws.onerror = () => rej(new Error('WebSocket connection refused'));
+        ws.onerror = () => rej(new Error('LeeWay Signaling Error: Connection Refused. Check your API Key and SDK Compliance.'));
       });
-      addEvent({ type: 'signaling', level: 'info', message: `Connected → ${WS_URL}`, source: 'SIGNAL' });
+      addEvent({ type: 'signaling', level: 'info', message: `Connected to LeeWay SFU Uplink`, source: 'SIGNAL' });
 
       // 3. Message router
       ws.onmessage = (evt) => {

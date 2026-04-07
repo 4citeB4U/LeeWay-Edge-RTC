@@ -8,7 +8,7 @@ ICON_ASCII: family=lucide glyph=audio-lines
   WHAT = Low-level audio capture (PCM worklet mic) and gapless PCM playback
   WHY  = Provides raw audio I/O for the voice loop — used when routing to the
          voice server (ws path). Web Speech API path does not use this module.
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = src/voice/audio.ts (adapted from agentleevoice AudioCapture/AudioPlayback)
   WHEN = 2026
   HOW  = getUserMedia → AudioWorklet PCM capture at 16 kHz;

@@ -7,7 +7,7 @@ ICON_ASCII: family=lucide glyph=trash-2
 5WH:
   WHAT = WARD — Watchful Agent for Room Disposal | Room Janitor NPC
   WHY  = Sweeps empty SFU rooms every 60s to prevent memory leaks
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = services/sfu/src/agents/ward.ts
   WHEN = 2026
   HOW  = setInterval 60s → getRooms() filter empty → deleteRoom() → agentBus.emit

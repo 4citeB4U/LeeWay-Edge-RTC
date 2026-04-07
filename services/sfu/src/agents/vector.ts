@@ -7,7 +7,7 @@ ICON_ASCII: family=lucide glyph=bar-chart-3
 5WH:
   WHAT = VECTOR — Vital Engine for Collecting and Tracking Operational Records
   WHY  = Polls Prometheus metrics every 15s and surfaces anomalies to all clients
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = services/sfu/src/agents/vector.ts
   WHEN = 2026
   HOW  = setInterval 15s → GET /metrics → parse Prometheus text → agentBus.emit

@@ -9,7 +9,7 @@ ICON_ASCII: family=lucide glyph=activity
   WHY  = Adds perceived intelligence and expressiveness to the voice output while
          remaining fully deterministic and Pi-safe — no neural voice generation,
          no vendor TTS, no compute cost
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = src/voice/emotion-engine.ts
   WHEN = 2026
   HOW  = Keyword + context rules → EmotionParams → multiplied against VoicePreset

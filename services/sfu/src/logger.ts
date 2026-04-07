@@ -7,7 +7,7 @@ ICON_ASCII: family=lucide glyph=file-text
 5WH:
   WHAT = LeeWay centralized logger — all agents + system write to unified /logs/ directory
   WHY  = Single log directory enables tailing, rotation, shipping, and forensic audits
-  WHO  = LeeWay Industries | LeeWay Innovation | Creator: Leonard Lee
+  WHO  = LEEWAY INNOVATIONS A LEEWAY INDUSTY CREATION
   WHERE = services/sfu/src/logger.ts
   WHEN = 2026
   HOW  = pino multistream → stdout + logs/combined.log; agentLogger() creates per-agent

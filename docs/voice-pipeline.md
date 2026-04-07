@@ -77,18 +77,16 @@ When the user speaks while Agent Lee is talking, `bargeIn()` immediately:
 
 ---
 
-## Voice Presets
-
 Six pinnable voice profiles are stored in `voice-presets.ts`. The user's preferred preset is persisted in `localStorage` via `savePresetId()`.
 
-| ID | Label | Gender | Base Rate | Pitch | Best for |
-|----|-------|--------|-----------|-------|---------|
-| M1 | Agent Lee — Command | Male | 1.00 | 0.95 | Default RTC ops, alerts |
-| M2 | Agent Lee — Calm | Male | 0.88 | 0.90 | Routine status reports |
-| M3 | Agent Lee — Alert | Male | 1.15 | 1.05 | SENTINEL critical alerts |
-| F1 | Agent ARIA — Neutral | Female | 1.00 | 1.00 | Health monitoring readouts |
-| F2 | Agent ARIA — Warm | Female | 0.92 | 0.97 | Advisory recommendations |
-| F3 | Agent ARIA — Precise | Female | 1.08 | 1.02 | Diagnostic/governance reports |
+| ID | Label | Gender | Base Rate | Pitch | Best for | Premium HD | Languages |
+|----|-------|--------|-----------|-------|---------|:---:|:---:|
+| M1 | Agent Lee — Premium HD | Male | 1.00 | 0.98 | Mission-critical command | ✅ | en, es, fr, de |
+| M2 | Agent Lee — Calm (Studio) | Male | 0.88 | 0.92 | Routine status reports | ✅ | en, it, ja |
+| M3 | Agent Lee — Alert (Ultra) | Male | 1.12 | 1.05 | High-energy security flags | ✅ | en, pt, ru |
+| F1 | Agent ARIA — Premium | Female | 1.00 | 1.00 | Health monitoring readouts | ✅ | en, zh, ko |
+| F2 | Agent ARIA — Warm | Female | 0.92 | 0.97 | Advisory recommendations | — | en, fr, nl |
+| F3 | Agent ARIA — Technical | Female | 1.08 | 1.02 | Governance & diagnostic reports | ✅ | en, de, pl, hi |
 
 Each preset has a `voiceNameHints[]` list — `voiceRegistry.findByHints()` picks the first matching voice available on the current device.
 

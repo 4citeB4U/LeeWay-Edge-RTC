@@ -12,7 +12,7 @@ graph TB
     SFU["LeeWay SFU\nNode 20 + mediasoup\nPort 3000"]
     COTURN["coturn TURN\nPort 3478 / 5349"]
     subgraph RUNTIME["Single Node.js Runtime"]
-      AGENTS["8 Agent Fleet\n(AGT-001 to AGT-008)"]
+      AGENTS["9 Agent Fleet\n(AGT-001 to AGT-009)"]
       LOGS["logs/ directory\ncombined.log + per-agent"]
     end
     SFU --- AGENTS
@@ -92,6 +92,7 @@ graph TD
   NEXUS([AGT-005 NEXUS]):::core
   REPAIR([AGT-006 REPAIR]):::infra
   SCALER([AGT-008 SCALER]):::infra
+  OBSERVER([AGT-009 OBSERVER]):::core
   OPERATOR -->|owns| GOVERNOR
   GOVERNOR -->|audits| ARIA
   GOVERNOR -->|audits| VECTOR
@@ -100,12 +101,14 @@ graph TD
   GOVERNOR -->|audits| NEXUS
   GOVERNOR -->|audits| REPAIR
   GOVERNOR -->|audits| SCALER
+  GOVERNOR -->|audits| OBSERVER
   REPAIR -->|auto-heals| ARIA
   REPAIR -->|auto-heals| VECTOR
   REPAIR -->|auto-heals| WARD
   REPAIR -->|auto-heals| SENTINEL
   REPAIR -->|auto-heals| NEXUS
   REPAIR -->|auto-heals| SCALER
+  REPAIR -->|auto-heals| OBSERVER
   classDef op fill:#f59e0b,color:#000;
   classDef oversight fill:#ef4444,color:#fff;
   classDef core fill:#3b82f6,color:#fff;

@@ -113,37 +113,123 @@ LICENSE: PROPRIETARY
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
+  --background: oklch(0 0 0);
+  --foreground: oklch(0.98 0.02 240);
+  --card: oklch(0.12 0.03 240 / 70%);
+  --card-foreground: oklch(0.98 0.02 240);
+  --popover: oklch(0.12 0.03 240);
+  --popover-foreground: oklch(0.98 0.02 240);
+  
+  --primary: oklch(0.45 0.25 260);    /* Royal Blue */
+  --primary-foreground: oklch(0.98 0.01 260);
+  --secondary: oklch(0.85 0.15 220);  /* Baby Blue */
+  --secondary-foreground: oklch(0.15 0.05 220);
+  
+  --muted: oklch(0.15 0.02 240);
+  --muted-foreground: oklch(0.65 0.02 240);
+  
+  --accent: oklch(0.85 0.25 85);     /* Cardinal Yellow */
+  --accent-foreground: oklch(0.15 0.05 85);
+  
+  --destructive: oklch(0.55 0.25 25); /* Cardinal Red */
+  
+  --border: oklch(1 0 0 / 12%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --ring: oklch(0.45 0.25 260);
+  
+  --chart-1: oklch(0.45 0.25 260);    /* Royal blue */
+  --chart-2: oklch(0.85 0.25 85);     /* Cardinal yellow */
+  --chart-3: oklch(0.55 0.25 25);     /* Cardinal red */
+  --chart-4: oklch(0.85 0.15 220);    /* Baby blue */
+  --chart-5: oklch(0.7 0.02 240);
+  
+  --sidebar: oklch(0.1 0.03 240);
+  --sidebar-foreground: oklch(0.98 0.02 240);
+  --sidebar-primary: oklch(0.45 0.25 260);
+  --sidebar-primary-foreground: oklch(0.98 0.01 260);
+  --sidebar-accent: oklch(0.85 0.25 85 / 10%);
+  --sidebar-accent-foreground: oklch(0.85 0.25 85);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --sidebar-ring: oklch(0.45 0.25 260);
+}
+
+@layer utilities {
+  .text-royal { color: oklch(0.45 0.25 260); }
+  .text-baby { color: oklch(0.85 0.15 220); }
+  .text-cardinal-yellow { color: oklch(0.85 0.25 85); }
+  .text-cardinal-red { color: oklch(0.55 0.25 25); }
+  
+  .bg-royal { background-color: oklch(0.45 0.25 260); }
+  .bg-cardinal-yellow { background-color: oklch(0.85 0.25 85); }
+  .bg-cardinal-red { background-color: oklch(0.55 0.25 25); }
+  
+  .glow-royal { filter: drop-shadow(0 0 15px oklch(0.45 0.25 260 / 0.5)); }
+  .glow-baby { filter: drop-shadow(0 0 15px oklch(0.85 0.15 220 / 0.5)); }
+
+  /* Brand Title Outline (Orange/Yellow) */
+  .text-outline-cardinal {
+    -webkit-text-stroke: 1.5px oklch(0.85 0.25 85);
+    paint-order: stroke fill;
+  }
+
+  /* Cosmic Galaxy Engine (High-Fidelity) */
+  .bg-galaxy-infinite {
+    background: radial-gradient(circle at center, #050b1a 0%, #000 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cosmic-nebula-blue {
+    background: radial-gradient(circle at 30% 40%, oklch(0.45 0.25 260 / 0.2) 0%, transparent 60%);
+    filter: blur(120px);
+  }
+
+  .cosmic-nebula-gold {
+    background: radial-gradient(circle at 70% 60%, oklch(0.85 0.25 85 / 0.12) 0%, transparent 60%);
+    filter: blur(120px);
+  }
+
+  .cosmic-energy-core {
+    background: radial-gradient(circle at 50% 50%, oklch(0.85 0.25 85 / 0.08) 0%, transparent 40%);
+    filter: blur(80px);
+    animation: core-pulse 10s ease-in-out infinite;
+  }
+
+  .starfield-fine {
+    background-image: 
+      radial-gradient(1px 1px at 30px 40px, #fff, rgba(0,0,0,0)),
+      radial-gradient(1.5px 1.5px at 150px 80px, oklch(0.85 0.25 85), rgba(0,0,0,0)),
+      radial-gradient(1px 1px at 200px 300px, #fff, rgba(0,0,0,0));
+    background-size: 300px 300px;
+    animation: cosmic-drift 180s linear infinite;
+    opacity: 0.5;
+  }
+
+  .starfield-seeds {
+    background-image: 
+      radial-gradient(3px 3px at 45% 55%, oklch(0.45 0.25 260 / 0.4), rgba(0,0,0,0)),
+      radial-gradient(4px 4px at 55% 45%, oklch(0.85 0.25 85 / 0.35), rgba(0,0,0,0));
+    background-size: 600px 600px;
+    animation: cosmic-drift 90s linear reverse infinite;
+    opacity: 0.6;
+    filter: blur(1px);
+  }
+
+  @keyframes core-pulse {
+    0%, 100% { opacity: 0.4; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.2); }
+  }
+
+  @keyframes cosmic-drift {
+    from { transform: translate(0, 0) rotate(0deg); }
+    to { transform: translate(-100px, -50px) rotate(2deg); }
+  }
+
+  .bg-grid-pattern {
+    background-image: linear-gradient(to right, rgba(99, 102, 241, 0.05) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(99, 102, 241, 0.05) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
 }
 
 @layer base {

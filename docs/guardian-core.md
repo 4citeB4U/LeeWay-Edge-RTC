@@ -57,11 +57,12 @@ graph TB
       ARIA["ARIA AGT-001\nVoice + Status"]
       VECTOR["VECTOR AGT-002\nNetwork Analytics"]
       WARD["WARD AGT-003\nRoom Manager"]
-      SENTINEL["SENTINEL AGT-004\nAnomaly Detection"]
+      SENTINEL["SENTINEL AGT-004\nSecurity + AI Protection"]
       NEXUS["NEXUS AGT-005\nOrchestration"]
       REPAIR["REPAIR AGT-006\nSelf-Healing"]
       GOVERNOR["GOVERNOR AGT-007\nPolicy Engine"]
       SCALER["SCALER AGT-008\nAuto-Scaling"]
+      OBSERVER["OBSERVER AGT-009\nVision Perception"]
     end
     subgraph GOV["Governance — src/governance.ts"]
       RULES["Policy Rules"]
@@ -124,6 +125,7 @@ flowchart LR
     STT["SpeechRecognition\nbrowser STT"]
     IR2["intent-router.ts\nclassifyIntent()"]
     RA["Rule Agents\nARIA / WARD / REPAIR"]
+    CAM["Cam"] --> OBS["OBSERVER\nReal-time Vision"] --> VISION["Object Recognition"]
     TTS2["speechQueue.ts\nenqueue() + emotion-engine"]
     OUT["Audio Output"]
     MIC2 --> STT --> IR2 --> RA --> TTS2 --> OUT
@@ -399,11 +401,13 @@ graph LR
   NEXUS2 <-->|"broadcast"| VECTOR2
   NEXUS2 <-->|"broadcast"| WARD2
   NEXUS2 <-->|"broadcast"| SENTINEL2
+  NEXUS2 <-->|"broadcast"| OBSERVER2["OBSERVER AGT-009\nVision Perception"]
   GOVERNOR2 -->|"enforce policy"| CORE
   GOVERNOR2 -->|"enforce policy"| INFRA2
   SENTINEL2 -->|"trigger"| REPAIR2
   SCALER2 -->|"setMode()"| GOVERNOR2
   REPAIR2 -->|"report"| NEXUS2
+  OBSERVER2 -->|"metadata"| NEXUS2
 ```
 
 ### Agent Detail Table
@@ -413,11 +417,12 @@ graph LR
 | ARIA | AGT-001 | core | var | voice, status, greet | no |
 | VECTOR | AGT-002 | core | 5s | getRTCStats, analyzeTrend | no |
 | WARD | AGT-003 | core | 10s | listPeers, muteP, kickPeer | no |
-| SENTINEL | AGT-004 | core | 3s | detectAnomaly, raisAlert | yes |
+| SENTINEL | AGT-004 | core | 3s | detectAnomaly, AI Hacker Protection | yes |
 | NEXUS | AGT-005 | core | 15s | broadcast, orchestrate | no |
 | REPAIR | AGT-006 | infra | trigger | reconnectPeer, restartWorker | yes |
 | GOVERNOR | AGT-007 | oversight | 30s | enforcePolicy, suspend/resume | no |
 | SCALER | AGT-008 | infra | 60s | setMode, addWorker, scaleRoom | yes |
+| OBSERVER | AGT-009 | core | 5s | capture, detect, broadast | no |
 
 ### Agent Lifecycle
 

@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="./public/leeway-edge-rtc.png" alt="LeeWay Edge RTC" width="800" />
+</div>
+
 # LeeWay Edge RTC SDK
 
 **LeeWay Industries | Sovereign Communication Hybrid**

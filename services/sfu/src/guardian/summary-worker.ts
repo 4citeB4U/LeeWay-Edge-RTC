@@ -22,8 +22,8 @@ AGENTS: NEXUS ARIA GOVERNOR
 LICENSE: PROPRIETARY
 */
 
-import type { StatsBuffer, StatsSnapshot } from './stats-worker';
-import { getModeConfig } from './runtime-mode';
+import type { StatsBuffer, StatsSnapshot } from './stats-worker.js';
+import { getModeConfig } from './runtime-mode.js';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 export interface SystemBriefing {

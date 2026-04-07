@@ -23,7 +23,6 @@ import { issueToken } from './auth.js';
 import { logger } from './logger.js';
 import { config } from './config.js';
 import { agentRegistry, agentRuntime, agentBus } from './agents/registry.js';
-import { validateHeader } from 'leeway-sdk';
 
 import { getRooms } from './mediasoup/room.js';
 import { roomConnections } from './signaling/handler.js';

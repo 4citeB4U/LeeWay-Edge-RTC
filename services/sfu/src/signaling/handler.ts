@@ -16,9 +16,8 @@ LICENSE: PROPRIETARY
 */
 import { WebSocket, WebSocketServer } from 'ws';
 import type { IncomingMessage } from 'http';
-import type { RtpCapabilities } from 'mediasoup/node/lib/rtpParametersTypes.js';
-import type { DtlsParameters } from 'mediasoup/node/lib/WebRtcTransportTypes.js';
-import type { RtpParameters } from 'mediasoup/node/lib/rtpParametersTypes.js';
+import type { RtpCapabilities, RtpParameters } from 'mediasoup/node/lib/rtpParametersTypes';
+import type { DtlsParameters } from 'mediasoup/node/lib/WebRtcTransportTypes';
 
 import { verifyToken } from '../auth.js';
 import { getOrCreateRoom, getRoom } from '../mediasoup/room.js';

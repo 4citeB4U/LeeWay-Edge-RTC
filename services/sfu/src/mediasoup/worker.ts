@@ -15,7 +15,7 @@ AGENTS: AUDIT
 LICENSE: PROPRIETARY
 */
 import * as mediasoup from 'mediasoup';
-import type { Worker } from 'mediasoup/node/lib/WorkerTypes.js';
+import type { Worker } from 'mediasoup/node/lib/Worker';
 import { config } from '../config.js';
 import { logger } from '../logger.js';
 

@@ -14,13 +14,11 @@ ICON_ASCII: family=lucide glyph=layers
 AGENTS: ASSESS ALIGN AUDIT
 LICENSE: PROPRIETARY
 */
-import type { Router } from 'mediasoup/node/lib/RouterTypes.js';
-import type { WebRtcTransport } from 'mediasoup/node/lib/WebRtcTransportTypes.js';
-import type { Producer } from 'mediasoup/node/lib/ProducerTypes.js';
-import type { Consumer } from 'mediasoup/node/lib/ConsumerTypes.js';
-import type { RtpCapabilities, RtpCodecCapability } from 'mediasoup/node/lib/rtpParametersTypes.js';
-import type { DtlsParameters } from 'mediasoup/node/lib/WebRtcTransportTypes.js';
-import type { RtpParameters } from 'mediasoup/node/lib/rtpParametersTypes.js';
+import type { Router } from 'mediasoup/node/lib/Router';
+import type { WebRtcTransport, DtlsParameters } from 'mediasoup/node/lib/WebRtcTransport';
+import type { Producer } from 'mediasoup/node/lib/Producer';
+import type { Consumer } from 'mediasoup/node/lib/Consumer';
+import type { RtpCapabilities, RtpCodecCapability, RtpParameters } from 'mediasoup/node/lib/rtpParametersTypes';
 
 import { getNextWorker } from './worker.js';
 import { config } from '../config.js';
@@ -148,7 +146,7 @@ export class Room {
     if (!peer) throw new Error(`Peer ${peerId} not found in room ${this.id}`);
     peer.transports.set(transport.id, transport);
 
-    transport.on('dtlsstatechange', (state) => {
+    transport.on('dtlsstatechange', (state: string) => {
       if (state === 'failed' || state === 'closed') {
         logger.warn({ transportId: transport.id, state }, 'DTLS state changed');
       }

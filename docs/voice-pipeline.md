@@ -162,3 +162,60 @@ useVoiceLoop({
 | Fonts / assets | Self-hosted via `@fontsource` — no Google Fonts CDN |
 
 > The voice pipeline works offline on any device that implements the Web Speech API (Chrome, Edge, Safari 17+).
+
+---
+
+## Call Mode Runtime (New)
+
+**Call Mode** is a higher-level orchestration layer built on top of the voice pipeline. It provides:
+
+### Key Differences from useVoiceLoop
+
+| Feature | useVoiceLoop | Call Mode |
+|---------|-------------|-----------|
+| **Scope** | Single voice I/O loop | Full session lifecycle |
+| **State** | Basic (listening/speaking) | Rich (idle/listening/processing/speaking/error) |
+| **Governance** | None | Integration hooks for approval layer |
+| **Interruption** | `bargeIn()` simple stop | `interrupt()` with state recovery |
+| **Voice Config** | UI-level only | Persistent via localStorage |
+| **Output Control** | Direct synthesis | Queued, priority-based playback |
+
+### Architecture
+
+```
+Call Mode Controller (src/runtime/CallMode.ts)
+├── useCallMode() hook [React]
+├── Session management (startSession / stopSession)
+├── Input processing (processInput → governance → agent)
+├── Voice output (speakResponse → Web Speech API)
+└── State machine with error handling
+
+Uses:
+├── SpeechRecognition API (input)
+├── Web Speech API (output)
+├── VoiceStudio config (saved voice preferences)
+└── Governance integration hooks
+```
+
+### Flow Diagram
+
+```mermaid
+graph TD
+  A["Call Mode Controller"] -->|startSession| B["Init SpeechRecognition"]
+  B -->|onopen| C["listening"]
+  C -->|user speech| D["SpeechRecognition onresult"]
+  D -->|transcript| E["processInput()"]
+  E -->|governance layer| F["Check policy"]
+  F -->|approved| G["Agent pipeline"]
+  G -->|response text| H["speakResponse()"]
+  H -->|to Web Speech| I["TTS with saved config"]
+  I -->|onend| C
+  C -->|user interrupts| J["interrupt()"]
+  J -->|stop TTS| C
+```
+
+### See Also
+
+- `docs/integration.md#call-mode-runtime` — Quick start and API reference
+- `docs/CALL_MODE_INTEGRATION.md` — Advanced governance and agent integration
+- `src/components/CallModeUI.tsx` — React component for UI controls

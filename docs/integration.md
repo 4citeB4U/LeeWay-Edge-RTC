@@ -7,6 +7,14 @@ You can integrate it into any web or mobile app that can:
 - Open a WebSocket connection.
 - Use a WebRTC library that supports custom signaling (mediasoup-client, Pion, etc.).
 
+### What's New
+
+- ✅ **Automatic WebSocket Retry** — 3 attempts with exponential backoff (1s, 2s, 4s)
+- ✅ **10-second Connection Timeout** — Prevents hanging connections
+- ✅ **Call Mode Runtime** — Real-time voice session orchestration
+- ✅ **Voice Persistence** — Save and reuse user voice configuration
+- ✅ **Visual Overlays** — Real-time detection boxes on video feeds
+
 ---
 
 ## Web integration (mediasoup-client)
@@ -156,3 +164,190 @@ can generate tokens for testing.
 | S→C | `peerLeft` | `peerId` | Peer disconnected |
 
 All client→server messages should include an `id` field; the server echoes it in the response.
+
+---
+
+## Call Mode Runtime
+
+### Overview
+
+**Call Mode** is a real-time voice session orchestrator that runs on top of the existing WebRTC and voice systems. It provides:
+
+- **Microphone Capture**: Automatic speech-to-text with browser Speech Recognition API
+- **Turn-Taking**: Pause listening while processing/speaking
+- **Session Management**: Start/stop call sessions with visual state indicators
+- **Voice Output**: Play responses using saved VoiceStudio voice configuration
+- **Interruption Handling**: Allow users to interrupt the agent mid-sentence
+- **Governance Integration**: Route responses through existing approval systems
+
+### Quick Start
+
+#### 1. Import and initialize
+
+```tsx
+import { useCallMode } from '@/runtime/CallMode';
+import { CallModeUI } from '@/components/CallModeUI';
+
+export function App() {
+  const callMode = useCallMode();
+  
+  return (
+    <div>
+      <CallModeUI callMode={callMode} />
+    </div>
+  );
+}
+```
+
+#### 2. Configure voice (one-time)
+
+Visit **VoiceStudio** to select and save your voice configuration:
+- Voice name (system voices)
+- Speech rate (0.5–2.0)
+- Pitch (0.5–2.0)
+- Volume (0.0–1.0)
+
+Saved in `localStorage` as `leeway_voice_custom`. Call Mode automatically uses this configuration.
+
+#### 3. Start a session
+
+```tsx
+await callMode.startSession();
+// Microphone enabled, listening for speech
+// UI shows: 🎤 Listening... [STOP]
+```
+
+#### 4. Process and respond
+
+```tsx
+// After user speaks, the input is captured and routed to your agent:
+callMode.onInput((text: string) => {
+  // Send to governance layer / agent pipeline
+  const response = await agentPipeline.process(text);
+  
+  // Call Mode plays the response with saved voice config
+  callMode.speakResponse(response);
+});
+```
+
+#### 5. Interrupt handling
+
+```tsx
+// User clicks [INTERRUPT] button while agent is speaking
+callMode.interrupt();
+// Current speech stops immediately, resumes listening
+```
+
+### API Reference
+
+#### `useCallMode()` Hook
+
+```ts
+interface CallModeController {
+  // Session lifecycle
+  init(): Promise<void>;
+  startSession(): Promise<void>;
+  stopSession(): void;
+  
+  // State
+  phase: 'idle' | 'listening' | 'processing' | 'speaking' | 'error';
+  isListening: boolean;
+  isMuted: boolean;
+  currentTranscript: string;
+  
+  // Control
+  toggleMute: () => void;
+  interrupt: () => void;
+  processInput: (input: string) => Promise<void>;
+  speakResponse: (text: string) => Promise<void>;
+  
+  // Config
+  setLanguage: (lang: string) => void;
+  getLanguage: () => string;
+}
+```
+
+#### Voice Configuration
+
+Managed by `src/voice/voice-config.ts`:
+
+```ts
+interface VoiceConfig {
+  voiceName: string;    // e.g., "Google UK English Female"
+  rate: number;         // 0.5 – 2.0, default 1.0
+  pitch: number;        // 0.5 – 2.0, default 1.0
+  volume: number;       // 0.0 – 1.0, default 1.0
+}
+
+// Load/save
+const config = loadVoiceConfig();
+saveVoiceConfig({ ...config, rate: 1.2 });
+```
+
+### Visual Indicators
+
+**CallModeUI** displays:
+
+| State | Display |
+|-------|---------|
+| `idle` | ⚪ Ready to start |
+| `listening` | 🎤 Listening... |
+| `processing` | ⏳ Processing... |
+| `speaking` | 🔊 Speaking... |
+| `error` | ❌ Connection error |
+
+**Phase transitions**:
+```
+idle → listening (user clicks START)
+  ↓
+listening (waits for speech input)
+  ↓
+processing (speech detected, routing to agent)
+  ↓
+speaking (agent response playing)
+  ↓
+listening (loop back, wait for next input)
+```
+
+User can **interrupt** at any point by clicking [INTERRUPT].
+
+### Governance Integration
+
+To integrate Call Mode with your governance/approval layer:
+
+```tsx
+// In your agent pipeline
+callMode.onInput(async (userInput: string) => {
+  try {
+    // Route through governance
+    const approved = await governanceLayer.checkPolicy(userInput, context);
+    if (!approved) {
+      callMode.speakResponse("Your request was not approved.");
+      return;
+    }
+    
+    // Process
+    const response = await agentPipeline.process(userInput);
+    
+    // Speak response
+    await callMode.speakResponse(response);
+  } catch (error) {
+    callMode.phase = 'error';
+  }
+});
+```
+
+### Troubleshooting
+
+**Symptom**: "Microphone permission denied"
+- **Solution**: Check browser privacy settings; ensure HTTPS in production.
+
+**Symptom**: "Voice not speaking / empty response"
+- **Solution**: Verify voice config is saved in VoiceStudio. Check browser console for speech synthesis errors.
+
+**Symptom**: "No audio input detected"
+- **Solution**: Test microphone with `navigator.mediaDevices.enumerateDevices()`. Ensure system audio permissions granted.
+
+### Full Configuration Guide
+
+For advanced setup (custom language models, agent parameters, governance hooks), see [CALL_MODE_INTEGRATION.md](./CALL_MODE_INTEGRATION.md).

@@ -137,6 +137,91 @@ curl http://localhost:3000/metrics | grep leeway_
 
 ---
 
+## Fly.io Deployment ✅ Live
+
+LeeWay SFU is production-deployed on Fly.io. See live dashboard: **https://fly.io/apps/leeway-sfu**
+
+### Prerequisites
+
+1. Install Fly CLI: https://fly.io/docs/hands-on/install-flyctl/
+2. Authenticate: `fly auth login`
+3. Create app (if not exists): `fly apps create leeway-sfu`
+
+### Deploy
+
+```bash
+cd services/sfu
+fly deploy --config fly.toml
+```
+
+**What happens:**
+1. Docker image built (68 MB optimized)
+2. Pushed to Fly registry
+3. Machines scaled (0–2 auto)
+4. Health check enabled (`/health`)
+5. UDP ports 40000–49999 allocated
+
+### Set Secrets
+
+```bash
+# JWT secret for token signing
+fly secrets set JWT_SECRET=<generate-random> --app leeway-sfu
+
+# Runtime mode
+fly secrets set LEEWAY_MODE=balanced --app leeway-sfu
+
+# Optional: TURN secret
+fly secrets set TURN_SECRET=<generate-random> --app leeway-sfu
+```
+
+### Monitor Live Deployment
+
+```bash
+# View logs
+fly logs --app leeway-sfu
+
+# Check machine status
+fly machines list --app leeway-sfu
+
+# See metrics
+fly metrics --app leeway-sfu
+
+# SSH into machine for debugging
+fly ssh console --app leeway-sfu
+```
+
+### Test Live SFU
+
+```bash
+# Health endpoint
+curl https://leeway-sfu.fly.dev/health
+
+# Get token (dev mode only in production)
+# curl -X POST https://leeway-sfu.fly.dev/dev/token \
+#      -H 'Content-Type: application/json' \
+#      -d '{"sub": "test"}'
+```
+
+### Environment Variables for Fly
+
+Available in `services/sfu/fly.toml`:
+
+```toml
+[env]
+  NODE_ENV = "production"
+  LOG_LEVEL = "warn"
+  HTTP_PORT = "3000"
+  RTC_MIN_PORT = "40000"
+  RTC_MAX_PORT = "40099"
+```
+
+Overrides via secrets (set with `fly secrets set`):
+- `JWT_SECRET` — Token signing key
+- `ANNOUNCED_IP` — Public IP (auto-detected by Fly)
+- `LEEWAY_MODE` — `light`, `balanced`, `full`
+
+---
+
 ## Firewall rules (ufw example)
 
 ```bash

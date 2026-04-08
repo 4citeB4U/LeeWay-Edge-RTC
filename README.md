@@ -239,8 +239,10 @@ function VoiceApp() {
 | `useRTCStore()` | Hook | Access RTC state, peer stats, events |
 | `useFederationRouter()` | Hook | Multi-node connection routing |
 | `DiagnosticSpectrum` | Component | Real-time peer health visualization |
-| `VoiceTuner` | Component | Voice preset and emotion controls |
-| `VisionPerceptionLab` | Component | Multi-agent optical perception feeds with real-time detection |
+| `VoiceTuner` | Component | Voice preset and emotion controls with persistent config |
+| `VoiceStudio` | Component | Interactive voice configuration and preview |
+| `CallModeUI` | Component | Real-time call session control (start/stop, mute, interrupt) |
+| `VisionPerceptionLab` | Component | Multi-agent optical perception with detection overlays |
 | `AgentHub` | Component | Agent status and control panel |
 | `EconomicMoat` | Component | Security and metrics dashboard |
 | `GalaxyBackground` | Component | Animated voice UI background |
@@ -281,36 +283,81 @@ docker compose -f deploy/docker-compose.yml up --build
 ```
 
 Starts:
-- **SFU** on port 3000
-- **TURN server** on ports 3478/5349
+- **SFU** on port 3000 (mediasoup + WebSocket signaling)
+- **TURN server** on ports 3478/5349 (STUN/TURN for NAT traversal)
+
+Features:
+- ✅ Automatic WebSocket reconnection (3 attempts, exponential backoff 1s-4s)
+- ✅ 10-second connection timeout with detailed error messages
+- ✅ JWT-based authentication with rate limiting
+- ✅ Health checks at `/health` endpoint
 
 ### Local Development
 
 ```bash
 cd services/sfu
 npm install
+npm run dev
+```
+
+Watches `src/` and rebuilds automatically. For production build:
+
+```bash
 npm run build
-node dist/index.js
+NODE_ENV=production node dist/index.js
 ```
 
 ---
 
 ## Deployment
 
-### To Fly.io
+### To Fly.io ✅ Live
 
 ```bash
-fly deploy --config services/sfu/fly.toml
-fly secrets set JWT_SECRET=<random-secret> --app your-app
-fly secrets set LEEWAY_MODE=balanced --app your-app
+# Deploy the SFU backend
+cd services/sfu
+fly deploy --config fly.toml
+
+# Set secrets
+fly secrets set JWT_SECRET=<random-secret> --app leeway-sfu
+fly secrets set LEEWAY_MODE=balanced --app leeway-sfu
 ```
 
-### To Docker Registry
+**Current Status:**
+- ✅ App deployed: `leeway-sfu` on Fly.io
+- ✅ Container size: 68 MB (optimized with production build)
+- ✅ Health endpoint: `https://leeway-sfu.fly.dev/health`
+- ✅ Auto-scaling enabled (min 0, max 2 machines)
+- ✅ UDP ports 40000–40099 forwarded for RTP/RTCP
+
+**Monitor deployment:**
+
+```bash
+fly logs --app leeway-sfu
+fly status --app leeway-sfu
+```
+
+### Docker Registry
 
 ```bash
 docker build -t your-registry/leeway-sfu:latest services/sfu/
 docker push your-registry/leeway-sfu:latest
+
+# Use in docker-compose
+services:
+  sfu:
+    image: your-registry/leeway-sfu:latest
+    ports:
+      - "3000:3000"
+      - "40000-40099:40000-40099/udp"
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
+      LEEWAY_MODE: balanced
 ```
+
+### Kubernetes
+
+See [deployment.md](docs/deployment.md) for Helm chart and multi-region setup.
 
 ---
 

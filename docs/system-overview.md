@@ -121,6 +121,7 @@ graph TD
 
 - **Local LLM (optional):** Can be integrated via the slow lane for advanced reasoning.
 - **Voice Pipeline:** 100% browser-native, no vendor APIs. See `docs/voice-pipeline.md` for details.
+- **Call Mode Runtime:** Real-time voice session orchestration with SpeechRecognition API + saved voice config. See `docs/integration.md#call-mode-runtime` for details.
 - **Monitoring:** Prometheus metrics at `/metrics`, connection/session APIs at `/connections` and `/rooms`.
 
 ---
@@ -138,7 +139,8 @@ graph TD
 ## 6. Setup & Integration
 
 - See `docs/deployment.md` for deployment instructions (Docker, bare-metal, cloud).
-- See `docs/integration.md` for client and app integration.
+- See `docs/integration.md` for client and app integration, including Call Mode runtime.
+- See `docs/CALL_MODE_INTEGRATION.md` for Call Mode advanced setup and governance integration.
 - See `docs/agents.md` for agent details and governance.
 - See `docs/voice-pipeline.md` for voice and TTS/STT pipeline details.
 

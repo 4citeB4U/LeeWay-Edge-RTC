@@ -41,8 +41,8 @@ function useGovernanceCheck() {
 
 // --- LAZY LABS ---
 const DiagnosticSpectrum = React.lazy(() => import('./src/components/DiagnosticSpectrum'));
-const VisionLab = React.lazy(() => import('./src/components/VisionLab'));
-const VoiceTuner = React.lazy(() => import('./src/components/VoiceTuner'));
+const VisionPerceptionLab = React.lazy(() => import('./src/components/VisionPerceptionLab'));
+const VoiceStudioLab = React.lazy(() => import('./src/components/VoiceStudioLab'));
 const AgentHub = React.lazy(() => import('./src/components/AgentHub'));
 const EconomicMoat = React.lazy(() => import('./src/components/EconomicMoat'));
 
@@ -240,16 +240,16 @@ export default function LeeWayEdgeRtc() {
          </Suspense>
       </section>
 
-      {/* 3. VIDEO (Vision) */}
+      {/* 3. VISION (Visual Intelligence) */}
       <section className="p-8 md:p-24 max-w-[1720px] mx-auto space-y-24 relative z-10">
          <SectionHeader 
            tag="Visual Intelligence" 
            title="Optical_Perception" 
-           subtitle="Multi-stream Scene Analysis powered by LEEWAY INNOVATIONS"
+           subtitle="Multi-Agent Scene Analysis & Real-Time Optical Perception powered by LEEWAY INNOVATIONS"
          />
 
          <Suspense fallback={<div className="h-[600px] bg-slate-900 animate-pulse rounded-[56px]" />}>
-            <VisionLab />
+            <VisionPerceptionLab />
          </Suspense>
       </section>
 
@@ -263,7 +263,7 @@ export default function LeeWayEdgeRtc() {
          />
 
          <Suspense fallback={<div className="h-[600px] bg-slate-900 animate-pulse rounded-[56px]" />}>
-            <VoiceTuner />
+            <VoiceStudioLab />
          </Suspense>
       </section>
 
@@ -281,7 +281,7 @@ export default function LeeWayEdgeRtc() {
          </Suspense>
       </section>
 
-      {/* 6. EFFICIENCY (ROI) */}
+      {/* 7. EFFICIENCY (ROI) */}
       <section className="p-8 md:p-24 max-w-[1720px] mx-auto relative z-10">
          <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
             <div className="space-y-12">

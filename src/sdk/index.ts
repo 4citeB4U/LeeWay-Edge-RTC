@@ -14,7 +14,7 @@ export { LeewayRTCNative } from '../rtc/leeway-rtc-native';
 // Pre-packaged UI Components for Developers
 export { default as DiagnosticSpectrum } from '../components/DiagnosticSpectrum';
 export { default as VoiceTuner } from '../components/VoiceTuner';
-export { default as VisionLab } from '../components/VisionLab';
+export { default as VisionPerceptionLab } from '../components/VisionPerceptionLab';
 export { default as AgentHub } from '../components/AgentHub';
 export { default as EconomicMoat } from '../components/EconomicMoat';
 export { default as GalaxyBackground } from '../components/GalaxyBackground';

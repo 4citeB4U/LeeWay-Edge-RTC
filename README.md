@@ -240,7 +240,7 @@ function VoiceApp() {
 | `useFederationRouter()` | Hook | Multi-node connection routing |
 | `DiagnosticSpectrum` | Component | Real-time peer health visualization |
 | `VoiceTuner` | Component | Voice preset and emotion controls |
-| `VisionLab` | Component | Video feed diagnostics |
+| `VisionPerceptionLab` | Component | Multi-agent optical perception feeds with real-time detection |
 | `AgentHub` | Component | Agent status and control panel |
 | `EconomicMoat` | Component | Security and metrics dashboard |
 | `GalaxyBackground` | Component | Animated voice UI background |

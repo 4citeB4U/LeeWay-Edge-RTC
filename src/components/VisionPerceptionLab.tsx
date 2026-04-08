@@ -535,7 +535,7 @@ const VisionPerceptionLab: React.FC = () => {
                   </p>
                   <p>
                     <span className="text-slate-500">Confidence:</span>{' '}
-                    {(currentPacket.confidence * 100).toFixed(1)}%
+                    {(currentPacket.confidence.overall * 100).toFixed(1)}%
                   </p>
                   <p>
                     <span className="text-slate-500">Facts:</span> {currentPacket.facts.length}

@@ -10,6 +10,15 @@ LICENSE: PROPRIETARY
 
 export type RuntimeMode = 'ultra-light' | 'balanced' | 'full';
 
+export interface MonitorState {
+  ts: number;
+  brightness: number;
+  blur: number;
+  motion: number;
+  facePresent: boolean;
+  runtimeMode: RuntimeMode;
+}
+
 export interface VisionFact {
   observable: boolean;
   value: string | number | boolean;

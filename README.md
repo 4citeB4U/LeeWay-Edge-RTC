@@ -92,51 +92,67 @@ flowchart LR
   QUEUE --> TTS["TTS Output\n(emotion-aware)"]
 ```
 
-**Mode selection:**
+**Runtime Modes** (set via `LEEWAY_MODE` env var):
 
-| Mode | LLM? | Dashboard? | Use Case | Pi 5 Safe? |
-|------|------|-----------|----------|-----------|
-| **A — Ultra-Light** | ❌ | ❌ | Edge devices, minimal power | ✅ yes |
-| **B — Balanced** | ✅ local | ✅ | Production standard | ⚠️ light |
-| **C — Full** | ✅ local | ✅ | High-end servers | ❌ no |
+| Mode | LLM? | Dashboard? | Use Case | Agent Ticks | Workers |
+|------|------|-----------|----------|-------------|---------|
+| **ultra-light** | ❌ | ❌ | Edge/Raspberry Pi | 3x slower | 1 |
+| **balanced** | ✅ optional | ✅ | Production (default) | normal | 2 |
+| **full** | ✅ optional | ✅ | High-capacity servers | normal | CPU count |
 
-Switch modes by voice command or via GOVERNOR agent.
+Switch modes via `LEEWAY_MODE=ultra-light|balanced|full` or at runtime via GOVERNOR agent.
 
 ---
 
 ## Voice System
 
-Agent Lee's voice is **consistent, emotional, and context-aware across all devices**.
+Voice output uses the **browser's native Web Speech API** with configurable voice parameters. System voices vary by browser/OS.
 
-### 6 Neural Voice Presets
+### Voice Configuration
 
-```
-M1 — Command (Male)     | Alerts, instructions, RTC status
-M2 — Calm (Male)        | Status reports, ambient monitoring  
-M3 — Alert (Male)       | SENTINEL critical flags
-───────────────────────────────────────
-F1 — Neutral (Female)   | Health metrics, diagnostics
-F2 — Warm (Female)      | Recommendations, suggestions
-F3 — Precise (Female)   | Governance reports, policies
+Use **VoiceStudio** component to select and preview system voices:
+
+```tsx
+import { VoiceStudio } from 'leeway-edge-rtc';
+
+<VoiceStudio />
 ```
 
-### Emotion Engine
+Saved to `localStorage` as `leeway_voice_custom`. Includes:
+- **Voice name** (system voices: "Google UK English Female", etc.)
+- **Rate** (0.5–2.0, default 1.0)
+- **Pitch** (0.5–2.0, default 1.0)  
+- **Volume** (0.0–1.0, default 1.0)
 
-Every message is emotionally contextualized:
+### Playback Priority Queue
+
+Messages are queued and prioritized:
 
 ```mermaid
 flowchart LR
-  TEXT["Text + Context"] --> EMO["Emotion Detection\n(8 types)"] --> PRESET["Voice Preset\n(6 choices)"] --> APPLY["Apply Emotion Modifiers\n(rate, pitch, volume)"]
-  APPLY --> QUEUE["Priority Queue\n(HIGH/NORMAL/LOW)"]
-  QUEUE --> TTS["Web Speech API"]
+  TEXT["Message + Priority"] --> QUEUE["Voice Output Queue"]
+  QUEUE --> |"HIGH (interrupt)"| URGENT["🔴 Alert\n(security, errors)"]
+  QUEUE --> |"NORMAL (enqueue)"| DIALOG["⚪ Dialogue\n(responses, status)"]
+  QUEUE --> |"LOW (background)"| AMBIENT["⚪ Ambient\n(monitoring, updates)"]
+  URGENT --> TTS["Web Speech API\n(with saved config)"]
+  DIALOG --> TTS
+  AMBIENT --> TTS
 ```
 
-**Emotions:** neutral, calm, alert, urgent, warm, concerned, satisfied, analytical
+### Call Mode Runtime
 
-**Priority Queue:**
-- **HIGH** — Barge-in alerts, security warnings (interrupts current speech)
-- **NORMAL** — Dialogue, status updates
-- **LOW** — Ambient monitoring, background narration
+**Call Mode** orchestrates real-time voice sessions with automatic SpeechRecognition + TTS:
+
+```tsx
+import { useCallMode } from '@/runtime/CallMode';
+import { CallModeUI } from '@/components/CallModeUI';
+
+const callMode = useCallMode();
+await callMode.startSession();
+// Microphone enabled → processes speech → routes through agent pipeline → speaks response
+```
+
+See [docs/integration.md#call-mode-runtime](docs/integration.md#call-mode-runtime) for full API.
 
 ---
 
@@ -207,10 +223,13 @@ npm install leeway-edge-rtc
 import {
   LeewaySDK,
   useRTCStore,
+  useCallModeState,
+  callModeController,
   DiagnosticSpectrum,
   VoiceTuner,
+  VisionPerceptionLab,
+  CallModeUI,
   AgentHub,
-  FederationRouter,
 } from 'leeway-edge-rtc';
 
 // Initialize SDK
@@ -220,11 +239,14 @@ const authParams = sdk.getAuthParams();
 // In your component
 function VoiceApp() {
   const rtcState = useRTCStore();
+  const callModeState = useCallModeState();
 
   return (
     <div>
+      <CallModeUI />
       <DiagnosticSpectrum />
       <VoiceTuner />
+      <VisionPerceptionLab />
       <AgentHub />
     </div>
   );

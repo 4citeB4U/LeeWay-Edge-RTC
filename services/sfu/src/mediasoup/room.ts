@@ -14,11 +14,7 @@ ICON_ASCII: family=lucide glyph=layers
 AGENTS: ASSESS ALIGN AUDIT
 LICENSE: PROPRIETARY
 */
-import type { Router } from 'mediasoup/node/lib/Router';
-import type { WebRtcTransport, DtlsParameters } from 'mediasoup/node/lib/WebRtcTransport';
-import type { Producer } from 'mediasoup/node/lib/Producer';
-import type { Consumer } from 'mediasoup/node/lib/Consumer';
-import type { RtpCapabilities, RtpCodecCapability, RtpParameters } from 'mediasoup/node/lib/rtpParametersTypes';
+import type { types } from 'mediasoup';
 
 import { getNextWorker } from './worker.js';
 import { config } from '../config.js';
@@ -27,17 +23,17 @@ import { metrics } from '../metrics.js';
 
 export interface PeerState {
   id: string;
-  transports: Map<string, WebRtcTransport>;
-  producers: Map<string, Producer>;
-  consumers: Map<string, Consumer>;
+  transports: Map<string, types.WebRtcTransport>;
+  producers: Map<string, types.Producer>;
+  consumers: Map<string, types.Consumer>;
 }
 
 export class Room {
   readonly id: string;
-  private readonly router: Router;
+  private readonly router: types.Router;
   private readonly peers = new Map<string, PeerState>();
 
-  private constructor(id: string, router: Router) {
+  private constructor(id: string, router: types.Router) {
     this.id = id;
     this.router = router;
   }
@@ -45,14 +41,14 @@ export class Room {
   static async create(id: string): Promise<Room> {
     const worker = getNextWorker();
     const router = await worker.createRouter({
-      mediaCodecs: config.mediasoup.routerMediaCodecs as unknown as RtpCodecCapability[],
+      mediaCodecs: config.mediasoup.routerMediaCodecs as unknown as types.RtpCodecCapability[],
     });
     logger.info({ roomId: id, routerId: router.id }, 'Room created');
     metrics.rooms.inc();
     return new Room(id, router);
   }
 
-  get routerRtpCapabilities(): RtpCapabilities {
+  get routerRtpCapabilities(): types.RtpCapabilities {
     return this.router.rtpCapabilities;
   }
 
@@ -103,8 +99,8 @@ export class Room {
   /**
    * Get all active producers across all peers (except optionally one peer).
    */
-  getOtherProducers(excludePeerId?: string): Array<{ peerId: string; producer: Producer }> {
-    const result: Array<{ peerId: string; producer: Producer }> = [];
+  getOtherProducers(excludePeerId?: string): Array<{ peerId: string; producer: types.Producer }> {
+    const result: Array<{ peerId: string; producer: types.Producer }> = [];
     for (const [peerId, peer] of this.peers) {
       if (peerId === excludePeerId) continue;
       for (const producer of peer.producers.values()) {
@@ -114,7 +110,7 @@ export class Room {
     return result;
   }
 
-  async createWebRtcTransport(peerId: string): Promise<WebRtcTransport> {
+  async createWebRtcTransport(peerId: string): Promise<types.WebRtcTransport> {
     const end = metrics.transportCreation.startTimer();
 
     const listenInfos: Array<{
@@ -160,7 +156,7 @@ export class Room {
   async connectTransport(
     peerId: string,
     transportId: string,
-    dtlsParameters: DtlsParameters,
+    dtlsParameters: types.DtlsParameters,
   ): Promise<void> {
     const peer = this.peers.get(peerId);
     if (!peer) throw new Error(`Peer ${peerId} not in room`);
@@ -173,9 +169,9 @@ export class Room {
   async produce(
     peerId: string,
     transportId: string,
-    rtpParameters: RtpParameters,
+    rtpParameters: types.RtpParameters,
     kind: 'audio' | 'video',
-  ): Promise<Producer> {
+  ): Promise<types.Producer> {
     const peer = this.peers.get(peerId);
     if (!peer) throw new Error(`Peer ${peerId} not in room`);
     const transport = peer.transports.get(transportId);
@@ -198,8 +194,8 @@ export class Room {
     peerId: string,
     transportId: string,
     producerId: string,
-    rtpCapabilities: RtpCapabilities,
-  ): Promise<Consumer> {
+    rtpCapabilities: types.RtpCapabilities,
+  ): Promise<types.Consumer> {
     if (!this.router.canConsume({ producerId, rtpCapabilities })) {
       throw new Error('Cannot consume: incompatible RTP capabilities');
     }

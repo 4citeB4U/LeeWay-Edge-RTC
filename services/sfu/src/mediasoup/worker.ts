@@ -15,11 +15,11 @@ AGENTS: AUDIT
 LICENSE: PROPRIETARY
 */
 import * as mediasoup from 'mediasoup';
-import type { Worker } from 'mediasoup/node/lib/Worker';
+import type { types } from 'mediasoup';
 import { config } from '../config.js';
 import { logger } from '../logger.js';
 
-const workers: Worker[] = [];
+const workers: types.Worker[] = [];
 let nextWorkerIndex = 0;
 
 /**
@@ -50,7 +50,7 @@ export async function createWorkers(): Promise<void> {
 /**
  * Round-robin worker selection.
  */
-export function getNextWorker(): Worker {
+export function getNextWorker(): types.Worker {
   if (workers.length === 0) throw new Error('No mediasoup workers available');
   const worker = workers[nextWorkerIndex % workers.length];
   nextWorkerIndex = (nextWorkerIndex + 1) % workers.length;

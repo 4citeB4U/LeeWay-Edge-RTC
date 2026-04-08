@@ -16,8 +16,7 @@ LICENSE: PROPRIETARY
 */
 import { WebSocket, WebSocketServer } from 'ws';
 import type { IncomingMessage } from 'http';
-import type { RtpCapabilities, RtpParameters } from 'mediasoup/node/lib/rtpParametersTypes';
-import type { DtlsParameters } from 'mediasoup/node/lib/WebRtcTransportTypes';
+import type { types } from 'mediasoup';
 
 import { verifyToken } from '../auth.js';
 import { getOrCreateRoom, getRoom } from '../mediasoup/room.js';
@@ -41,7 +40,7 @@ interface AuthMessage extends BaseMessage {
 interface JoinRoomMessage extends BaseMessage {
   type: 'joinRoom';
   roomId: string;
-  rtpCapabilities: RtpCapabilities;
+  rtpCapabilities: types.RtpCapabilities;
 }
 
 interface LeaveRoomMessage extends BaseMessage {
@@ -56,21 +55,21 @@ interface CreateTransportMessage extends BaseMessage {
 interface ConnectTransportMessage extends BaseMessage {
   type: 'connectTransport';
   transportId: string;
-  dtlsParameters: DtlsParameters;
+  dtlsParameters: types.DtlsParameters;
 }
 
 interface ProduceMessage extends BaseMessage {
   type: 'produce';
   transportId: string;
   kind: 'audio' | 'video';
-  rtpParameters: RtpParameters;
+  rtpParameters: types.RtpParameters;
 }
 
 interface ConsumeMessage extends BaseMessage {
   type: 'consume';
   transportId: string;
   producerId: string;
-  rtpCapabilities: RtpCapabilities;
+  rtpCapabilities: types.RtpCapabilities;
 }
 
 interface ResumeConsumerMessage extends BaseMessage {

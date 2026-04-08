@@ -15,7 +15,7 @@
 LeeWay Edge RTC is a **complete real-time communication platform** that handles:
 
 - ✅ **Multi-room WebRTC routing** — mediasoup SFU for audio/video at scale
-- ✅ **Intelligent voice processing** — Live STT, emotion-aware TTS, 6 neural voices
+- ✅ **Intelligent voice processing** — Live STT, Web Speech API TTS, priority-queued output with configurable voice (rate/pitch/volume)
 - ✅ **Self-managing agent fleet** — 9 autonomous agents handle health, security, scaling, healing
 - ✅ **Sub-10ms latency** — Two-lane architecture: fast lane for voice commands, slow lane for diagnostics
 - ✅ **Zero external AI** — Runs entirely offline; no cloud TTS, no vendor LLMs (optional local LLM support)
@@ -89,7 +89,7 @@ flowchart LR
 
   FAST <-->|"Intent events"| SLOW
   META -->|"Context"| SLOW
-  QUEUE --> TTS["TTS Output\n(emotion-aware)"]
+  QUEUE --> TTS["TTS Output\n(Web Speech API)"]
 ```
 
 **Runtime Modes** (set via `LEEWAY_MODE` env var):
@@ -144,15 +144,21 @@ flowchart LR
 **Call Mode** orchestrates real-time voice sessions with automatic SpeechRecognition + TTS:
 
 ```tsx
-import { useCallMode } from '@/runtime/CallMode';
-import { CallModeUI } from '@/components/CallModeUI';
+import { CallModeUI, useCallModeState } from 'leeway-edge-rtc';
 
-const callMode = useCallMode();
-await callMode.startSession();
-// Microphone enabled → processes speech → routes through agent pipeline → speaks response
+function App() {
+  const callModeState = useCallModeState();
+  
+  return (
+    <div>
+      <CallModeUI />
+      {/* State: {callModeState.phase} — idle | listening | processing | speaking | error */}
+    </div>
+  );
+}
 ```
 
-See [docs/integration.md#call-mode-runtime](docs/integration.md#call-mode-runtime) for full API.
+Session controls (start/stop, mute, interrupt) are in the `CallModeUI` component. See [docs/integration.md#call-mode-runtime](docs/integration.md#call-mode-runtime) for full API.
 
 ---
 
@@ -261,7 +267,7 @@ function VoiceApp() {
 | `useRTCStore()` | Hook | Access RTC state, peer stats, events |
 | `useFederationRouter()` | Hook | Multi-node connection routing |
 | `DiagnosticSpectrum` | Component | Real-time peer health visualization |
-| `VoiceTuner` | Component | Voice preset and emotion controls with persistent config |
+| `VoiceTuner` | Component | Voice analysis and matching lab (tone, pitch, cadence) |
 | `VoiceStudio` | Component | Interactive voice configuration and preview |
 | `CallModeUI` | Component | Real-time call session control (start/stop, mute, interrupt) |
 | `VisionPerceptionLab` | Component | Multi-agent optical perception with detection overlays |
@@ -278,12 +284,6 @@ Create `.env.local`:
 VITE_SIGNALING_URL=wss://localhost:3000/ws
 VITE_HTTP_BASE_URL=http://localhost:3000
 
-# ─── TTS Voice ────────────────────────────────────────────────
-TTS_ENABLED=true
-TTS_PROVIDER=edge
-TTS_VOICE=en-US-ChristopherNeural
-TTS_RATE=+0%
-
 # ─── WebRTC ───────────────────────────────────────────────────
 RTC_MIN_PORT=40000
 RTC_MAX_PORT=40099
@@ -291,6 +291,8 @@ RTC_MAX_PORT=40099
 # ─── Logging ───────────────────────────────────────────────────
 LOG_LEVEL=info
 ```
+
+**Voice configuration** is handled via the **VoiceStudio** component (saved to localStorage), not environment variables.
 
 ---
 
@@ -405,7 +407,7 @@ Check `VITE_SIGNALING_URL` and firewall rules for port 3000.
 Ensure ports 3000, 3478, 5349, and RTP range (40000–40099) are open.
 
 **Voice not working?**  
-Enable `TTS_ENABLED=true` and verify `TTS_VOICE` matches your system.
+Open **VoiceStudio** component to select and save a system voice. Check browser console for speech synthesis errors. Ensure microphone permissions granted in browser settings.
 
 ---
 

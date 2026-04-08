@@ -103,6 +103,8 @@ SUCCESS:
 User can now see exactly where the AI is looking and what regions it's analyzing.
 */
 
+import type { RuntimeMode } from './types';
+
 export interface ScanOutput {
   ts: number;
   frameId: string;

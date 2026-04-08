@@ -7,6 +7,8 @@ PURPOSE: Orchestrates real-time call sessions with voice I/O, turn-taking, and g
 LICENSE: PROPRIETARY
 */
 
+/// <reference path="../speech-recognition.d.ts" />
+
 import { cancelSpeech, speakDirectWithSavedVoice, getCurrentVoice } from '../voice/voice-output';
 import { loadVoiceConfig } from '../voice/voice-config';
 
@@ -71,15 +73,15 @@ class CallModeController {
     }
 
     this.recognition = new SpeechRecognition();
-    this.recognition.continuous = true;
-    this.recognition.interimResults = true;
-    this.recognition.lang = 'en-US';
+    this.recognition!.continuous = true;
+    this.recognition!.interimResults = true;
+    this.recognition!.lang = 'en-US';
 
-    this.recognition.onstart = () => {
+    this.recognition!.onstart = () => {
       this.setState({ phase: 'listening', micOpen: true, lastError: null });
     };
 
-    this.recognition.onresult = (event) => {
+    this.recognition!.onresult = (event) => {
       let interim = '';
       let final = '';
 
@@ -101,12 +103,12 @@ class CallModeController {
       }
     };
 
-    this.recognition.onerror = (event) => {
+    this.recognition!.onerror = (event) => {
       console.error('Speech recognition error:', event.error);
       this.setState({ lastError: `Speech recognition error: ${event.error}`, phase: 'error' });
     };
 
-    this.recognition.onend = () => {
+    this.recognition!.onend = () => {
       this.setState({ phase: 'idle', micOpen: false });
     };
   }
@@ -152,7 +154,7 @@ class CallModeController {
     if (!this.state.active) return;
 
     if (this.recognition) {
-      this.recognition.stop();
+      this.recognition!.stop();
     }
 
     if (this.mediaStream) {
@@ -176,7 +178,7 @@ class CallModeController {
    */
   pauseListening(): void {
     if (this.recognition && this.state.micOpen) {
-      this.recognition.stop();
+      this.recognition!.stop();
       this.setState({ micOpen: false, phase: 'processing' });
     }
   }
@@ -186,7 +188,7 @@ class CallModeController {
    */
   resumeListening(): void {
     if (this.recognition && this.state.active && !this.state.micOpen) {
-      this.recognition.start();
+      this.recognition!.start();
       this.setState({ micOpen: true, phase: 'listening', transcript: '' });
     }
   }

@@ -34,6 +34,8 @@ import {
   visionStorage,
 } from '../vision';
 
+import { VisualOverlayRenderer, ScanOutput, InspectOutput } from '../vision/VisualOverlayRenderer';
+
 import type {
   RuntimeMode,
   AwarenessPacket,
@@ -65,17 +67,21 @@ const VisionPerceptionLab: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const overlayCanvasRef = useRef<HTMLCanvasElement>(null);
+  const rendererRef = useRef<VisualOverlayRenderer | null>(null);
 
   // State: Controls
   const [runtimeMode, setRuntimeMode] = useState<RuntimeMode>('balanced');
   const [isMonitoring, setIsMonitoring] = useState(false);
   const [isScanning, setIsScanning] = useState(false);
+  const [currentMode, setCurrentMode] = useState<'monitor' | 'scan' | 'inspect' | 'awareness'>('monitor');
 
   // State: Readings
   const [currentPacket, setCurrentPacket] = useState<AwarenessPacket | null>(null);
   const [diagnostics, setDiagnostics] = useState<VisionDiagnostics | null>(null);
   const [storageInfo, setStorageInfo] = useState({ packets: 0, bytes: 0 });
   const [budgetStatus, setBudgetStatus] = useState({ safeToScan: true, load: 0 });
+  const [scanOutput, setScanOutput] = useState<ScanOutput | null>(null);
+  const [inspectOutput, setInspectOutput] = useState<InspectOutput | null>(null);
 
   // State: History
   const [detectionHistory, setDetectionHistory] = useState<AwarenessPacket[]>([]);
@@ -153,50 +159,15 @@ const VisionPerceptionLab: React.FC = () => {
         visionMonitor.setRuntimeMode(runtimeMode);
 
         visionMonitor.start(state => {
+          // Initialize renderer if needed
+          if (!rendererRef.current && overlayCanvasRef.current) {
+            rendererRef.current = new VisualOverlayRenderer(overlayCanvasRef.current);
+          }
+
           // Draw monitor state on overlay
-          if (overlayCanvasRef.current) {
-            const ctx = overlayCanvasRef.current.getContext('2d');
-            if (ctx) {
-              ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
-              ctx.fillRect(
-                0,
-                0,
-                overlayCanvasRef.current.width,
-                overlayCanvasRef.current.height
-              );
-
-              // Brightness bar (top-left)
-              ctx.fillStyle = `rgba(${Math.round(state.brightness * 255)}, 150, 100, 0.8)`;
-              ctx.fillRect(10, 10, state.brightness * 80, 15);
-              ctx.fillStyle = 'white';
-              ctx.font = '12px monospace';
-              ctx.fillText(
-                `Brightness: ${(state.brightness * 100).toFixed(0)}%`,
-                10,
-                30
-              );
-
-              // Motion indicator (top-right)
-              ctx.fillStyle =
-                state.motion > 0.5
-                  ? 'rgba(255, 100, 100, 0.8)'
-                  : 'rgba(100, 200, 100, 0.8)';
-              ctx.fillRect(220, 10, state.motion * 80, 15);
-              ctx.fillStyle = 'white';
-              ctx.fillText(
-                `Motion: ${(state.motion * 100).toFixed(0)}%`,
-                220,
-                30
-              );
-
-              // Face presence (bottom-left)
-              if (state.facePresent) {
-                ctx.fillStyle = 'rgba(100, 255, 100, 0.8)';
-                ctx.fillRect(10, overlayCanvasRef.current.height - 30, 200, 20);
-                ctx.fillStyle = 'black';
-                ctx.fillText('Face Detected', 15, overlayCanvasRef.current.height - 13);
-              }
-            }
+          if (rendererRef.current) {
+            rendererRef.current.clear();
+            rendererRef.current.drawHUDPanel(state);
           }
 
           // Update diagnostics
@@ -278,6 +249,8 @@ const VisionPerceptionLab: React.FC = () => {
         setCurrentPacket(packet);
         setDetectionHistory(prev => [packet, ...prev.slice(0, 9)]);
         setHistoryScanCount(prev => prev + 1);
+        setScanOutput(scanOutput);
+        setInspectOutput(inspectOutput);
 
         // Update storage info
         const packetSize = visionStorage.getPacketSize();

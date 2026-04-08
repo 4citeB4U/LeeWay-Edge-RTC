@@ -15,9 +15,15 @@ export { LeewayRTCNative } from '../rtc/leeway-rtc-native';
 export { default as DiagnosticSpectrum } from '../components/DiagnosticSpectrum';
 export { default as VoiceTuner } from '../components/VoiceTuner';
 export { default as VisionPerceptionLab } from '../components/VisionPerceptionLab';
+export { default as CallModeUI } from '../components/CallModeUI';
 export { default as AgentHub } from '../components/AgentHub';
 export { default as EconomicMoat } from '../components/EconomicMoat';
 export { default as GalaxyBackground } from '../components/GalaxyBackground';
+
+// Call Mode Runtime + Voice Configuration
+export { callModeController, useCallModeState, type CallModeSessionState } from '../runtime/CallMode';
+export { speakWithSavedVoice, speakDirectWithSavedVoice, cancelSpeech, getCurrentVoice, getVoiceDisplayName } from '../voice/voice-output';
+export { loadVoiceConfig, saveVoiceConfig, clearVoiceConfig, updateVoiceConfig, type VoiceConfig } from '../voice/voice-config';
 
 // Setup Interface
 export class LeewaySDK {

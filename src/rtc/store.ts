@@ -260,27 +260,45 @@ export function useRTCStore(): RTCStoreAPI {
     setState(prev => ({ ...prev, connectionState: 'connecting', roomName: roomId }));
     addEvent({ type: 'signaling', level: 'info', message: 'Fetching session token...', source: 'AUTH' });
 
-    try {
-      // 1. JWT
-      const sub = `operator-${Math.random().toString(36).slice(2, 7)}`;
-      const tokenResp = await fetch(TOKEN_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sub }),
-      });
-      if (!tokenResp.ok) throw new Error(`Token request failed: ${tokenResp.status}`);
-      const { token } = (await tokenResp.json()) as { token: string };
-      addEvent({ type: 'signaling', level: 'success', message: 'JWT issued — opening WebSocket...', source: 'AUTH' });
+    const MAX_RETRIES = 3;
+    const BASE_DELAY = 1000; // 1s
 
-      // 2. WebSocket
-      const ws = new WebSocket(WS_URL(apiKey));
-      wsRef.current = ws;
+    for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+      try {
+        // 1. JWT
+        const sub = `operator-${Math.random().toString(36).slice(2, 7)}`;
+        const tokenResp = await fetch(TOKEN_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sub }),
+        });
+        if (!tokenResp.ok) throw new Error(`Token request failed: ${tokenResp.status}`);
+        const { token } = (await tokenResp.json()) as { token: string };
+        addEvent({ type: 'signaling', level: 'success', message: 'JWT issued — opening WebSocket...', source: 'AUTH' });
 
-      await new Promise<void>((res, rej) => {
-        ws.onopen  = () => res();
-        ws.onerror = () => rej(new Error('LeeWay Signaling Error: Connection Refused. Check your API Key and SDK Compliance.'));
-      });
-      addEvent({ type: 'signaling', level: 'info', message: `Connected to LeeWay SFU Uplink`, source: 'SIGNAL' });
+        // 2. WebSocket with timeout
+        const wsUrl = WS_URL(apiKey);
+        const ws = new WebSocket(wsUrl);
+        wsRef.current = ws;
+
+        const WS_OPEN_TIMEOUT = 10000; // 10s timeout
+        await new Promise<void>((res, rej) => {
+          const timer = setTimeout(() => {
+            ws.close();
+            rej(new Error(`WebSocket connection timeout (${WS_OPEN_TIMEOUT}ms). URL: ${wsUrl}`));
+          }, WS_OPEN_TIMEOUT);
+
+          ws.onopen = () => {
+            clearTimeout(timer);
+            res();
+          };
+          ws.onerror = (evt) => {
+            clearTimeout(timer);
+            const err = new Error(`WebSocket connection failed. URL: ${wsUrl}. Check if SFU server is running on port 3000.`);
+            rej(err);
+          };
+        });
+        addEvent({ type: 'signaling', level: 'info', message: `Connected to LeeWay SFU Uplink`, source: 'SIGNAL' });
 
       // 3. Message router
       ws.onmessage = (evt) => {
@@ -435,12 +453,27 @@ export function useRTCStore(): RTCStoreAPI {
       // 10. Stats polling
       statsTimerRef.current = setInterval(() => { void pollStats(); }, 2000);
 
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      setState(prev => ({ ...prev, connectionState: 'failed' }));
-      addEvent({ type: 'system', level: 'error', message: `Connection failed: ${msg}`, source: 'SYSTEM' });
-      wsRef.current?.close();
-      wsRef.current = null;
+        // Connection succeeded — exit retry loop
+        return;
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        wsRef.current?.close();
+        wsRef.current = null;
+
+        if (attempt < MAX_RETRIES - 1) {
+          const delay = BASE_DELAY * Math.pow(2, attempt); // exponential backoff
+          addEvent({
+            type: 'system',
+            level: 'warn',
+            message: `Connection attempt ${attempt + 1} failed: ${msg}. Retrying in ${delay}ms...`,
+            source: 'SYSTEM'
+          });
+          await new Promise(resolve => setTimeout(resolve, delay));
+        } else {
+          setState(prev => ({ ...prev, connectionState: 'failed' }));
+          addEvent({ type: 'system', level: 'error', message: `Connection failed after ${MAX_RETRIES} attempts: ${msg}`, source: 'SYSTEM' });
+        }
+      }
     }
   }, [request, pollStats, addEvent]);
 

@@ -13,6 +13,7 @@ LICENSE: PROPRIETARY
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { updateVoiceConfig } from './voice-config';
 
 type VoicePhase = 'idle' | 'boot' | 'capture' | 'analyze' | 'profile' | 'match' | 'modulate' | 'preview' | 'save' | 'ready' | 'error';
 
@@ -595,6 +596,18 @@ export function VoiceStudio({ onClose }: VoiceStudioProps) {
     return () => clearInterval(timer);
   }, [isRecording]);
 
+  // Persist voice config when user reaches "ready" phase
+  useEffect(() => {
+    if (phase === 'ready' && selectedVoice) {
+      updateVoiceConfig({
+        voiceName: selectedVoice.name,
+        rate: 1.0,
+        pitch: 1.0,
+        volume: 1.0,
+      });
+    }
+  }, [phase, selectedVoice]);
+
   const renderStepContent = () => {
     switch (phase) {
       case 'capture':
@@ -702,7 +715,7 @@ export function VoiceStudio({ onClose }: VoiceStudioProps) {
                 ← Back
               </motion.button>
             )}
-            {phase !== 'preview' && phase !== 'ready' && (
+            {phase !== 'preview' && (
               <motion.button
                 onClick={() => {
                   const phases: VoicePhase[] = ['capture', 'analyze', 'profile', 'match', 'modulate', 'preview'];
@@ -715,15 +728,17 @@ export function VoiceStudio({ onClose }: VoiceStudioProps) {
                 Next →
               </motion.button>
             )}
-            {phase === 'ready' && (
-              <motion.button
-                onClick={onClose}
-                whileHover={{ scale: 1.02 }}
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-slate-950 rounded-xl font-bold uppercase text-sm transition-all"
-              >
-                ✓ Close
-              </motion.button>
-            )}
+          </div>
+        )}
+        {phase === 'ready' && (
+          <div className="p-6 border-t border-slate-700/50 flex gap-3">
+            <motion.button
+              onClick={onClose}
+              whileHover={{ scale: 1.02 }}
+              className="flex-1 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-slate-950 rounded-xl font-bold uppercase text-sm transition-all"
+            >
+              ✓ Close
+            </motion.button>
           </div>
         )}
       </motion.div>
